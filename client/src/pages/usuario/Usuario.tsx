@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useEffect,useState} from 'react';
 import{user} from "../../usuario"
 import Example from "./eliminar/Eliminar"
 import { Link } from 'react-router-dom';
@@ -12,9 +12,21 @@ const Usuario = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    // Realizar la solicitud GET cuando el componente se monta
+    fetch('')
+      .then((response) => response.json())
+      .then((data) => setData(data)) // Actualiza el estado con los datos recibidos)
+      .catch((error) => {
+        console.error('Error al obtener los datos:', error);
+        
+      });
+  }, []);
+
   return (
     <>
-    <div className="usuario">
+    <div className="usuario" style={{ marginTop:'-90px' }}>
       <div>
          <Link to="/home/crear">
       <button className="boton">Crear Usuario</button>

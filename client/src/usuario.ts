@@ -45,7 +45,7 @@ export const funcionalidades=[
     },
     {
         id:3,
-        nombre:"Usuario.eliminar",
+        nombre:"Usuario.eli",
         descripcion:"elimina un usuario",
     },
     {

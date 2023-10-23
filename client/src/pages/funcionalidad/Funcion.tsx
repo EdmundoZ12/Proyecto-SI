@@ -13,7 +13,7 @@ const Funcion = () => {
   const handleShow = () => setShow(true);
   return (
     <>
-    <div>
+    <div style={{ marginTop:'-70px' }}>
         <h1 className='Header'>Gestionar Funcionalidades</h1>
         <Link to='/home/crearF'>
         <button className='CrearRol'>Crear Funcionalidad</button>
@@ -34,7 +34,7 @@ const Funcion = () => {
                 <td>{rol.descripcion}</td>
                 <div className="botones">
                
-              <Link to="/home/editar">
+              <Link to="/home/editarF">
                 <BiEdit size='40px' gap='20px' color='green' />
                 
               </Link>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import{roles} from "../../Datos";
 import{BiEdit} from 'react-icons/bi';
 import{AiTwotoneDelete} from 'react-icons/ai';
@@ -11,10 +11,17 @@ const Rol = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    // Realizar la solicitud GET cuando el componente se monta
+    fetch('https://rickandmortyapi.com/api/character/400')
+      .then((response) => response.json())
+      .then((data) => setData(data)); // Actualiza el estado con los datos recibidos)
+  }, []);
+  console.log(data)
   return (
     <>
-    <div>
+    <div style={{ marginTop:'-70px' }}>
         <h1 className='Header'>Gestionar Roles</h1>
         <Link to='/home/crearRol'>
         <button className='CrearRol'>Crear Rol</button>

@@ -1,6 +1,7 @@
 import React, { useState,} from 'react'
 import "./editar.scss"
 import { Link } from 'react-router-dom';
+import { roles } from '../../../Datos';
 const Editar=()=>{
     const [formData, setFormData] = useState({
         nombre: '',
@@ -109,10 +110,9 @@ const Editar=()=>{
             value={formData.rol}
             onChange={handleChangeSelect}
           >
-            
-            <option value="administrador">Administrador</option>
-            <option value="entrenador">Entrenador</option>
-            <option value="entrenador">Recepcionista</option>
+            {roles.map((fun)=>(
+              <option key={fun.id} value="administrador">{fun.nombre}</option>
+              ))}
           </select>
           </div>
           <button type="submit">Crear</button>

@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 import { funcionalidades } from '../../../usuario';
 import {roles} from "../../../Datos";
 
-const EditarR=(propp)=>{
-    console.log(propp)
+const EditarR=()=>{
     const [formData, setFormData] = useState({
         nombre: '',
         rol:'',
@@ -33,40 +32,36 @@ const EditarR=(propp)=>{
     };
 
     return(
-        <div className='contenedor'>
-        <h1>Nuevo Usuario</h1>
+        <div className='contenedor' style={{ marginTop:'-70px' }}>
+        <h1 style={{ fontSize:'30px' }}>Editar Rol</h1>
         <form onSubmit={handleSubmit} className='formulario'>
           <div >
-            <label htmlFor="nombre">Nombre:</label>
+            <label htmlFor="nombre" style={{ fontSize:'25px' }}>Nombre:</label>
             <input
               type="text"
               id="nombre"
               name="nombre"
-              value={propp.nombre}
+             
               onChange={handleChange}
               
             />
           </div>
           
           <div>
-          <label htmlFor="rol">Rol:</label>
-          <select
-            id="rol"
-            name="rol"
-            value={formData.rol}
-            onChange={handleChangeSelect}
-          >
-            {funcionalidades.map((fun)=>(
-                <option key={fun.id}>{fun.nombre}</option>
-            ))}
-          </select>
+          <label htmlFor="rol" style={{ fontSize:'25px' }}>Funcionalidades:</label>
+          <div>
+             {funcionalidades.map((fun)=>(
+                <label key={fun.id} style={{ display: 'flex', alignItems:'center' }}><input type="checkbox" style={{ width: '20px', marginRight: '8px' }}/>{fun.nombre}</label>
+             ))}
           </div>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <button type="submit">AñadirFun</button>
           <button type="submit">EliminarFun</button>
           <Link to="/home/rol">
           <button type="submit">Cancelar</button>
           </Link>
-          
+         </div>
         </form>
       </div>
     )

@@ -35,7 +35,7 @@ class Login extends Component{
         .then(response=>{
             if(response.length>0){
                 console.log(response)
-                window.location.href='/home';
+                
 
             }else{
                 alert('el usuario o la contraseña no son correctos')
@@ -44,6 +44,7 @@ class Login extends Component{
         .catch(error=>{
             console.log(error);
         })
+        window.location.href='/home';
     }
     /*componentDidMount(){
         if(cookies.get('username')){

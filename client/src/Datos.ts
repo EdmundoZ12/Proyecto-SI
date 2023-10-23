@@ -23,31 +23,13 @@ export const menu=[
     },
     {
         id: 2,
-        titulo: "lista",
+        titulo: "",
         lista: [
           {
             id: 1,
             titulo: "Usuario",
             URL: "/home/usuario",
             icono: "user.svg",
-          },
-          {
-            id: 2,
-            titulo: "Producto",
-            URL: "/home/rol",
-            icono: "product.svg",
-          },
-          {
-            id: 3,
-            titulo: "Inventario",
-            URL: "/orders",
-            icono: "order.svg",
-          },
-          {
-            id: 4,
-            titulo: "Cursos",
-            URL: "/posts",
-            icono: "post2.svg",
           },
         ],
       },
@@ -110,10 +92,14 @@ export const topDealUsers = [
 export const roles=[
   {
     id:1,
-    nombre:"Administrador"
+    nombre:"Administrador General"
   },
   {
     id:2,
+    nombre:"Administrador"
+  },
+  {
+    id:3,
     nombre:"Entrenador"
   },
 

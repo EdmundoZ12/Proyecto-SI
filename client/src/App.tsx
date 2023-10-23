@@ -15,6 +15,7 @@ import Menu from "./components/Menu/Menu";
 import Funcion from "./pages/funcionalidad/Funcion";
 import CrearF from "./pages/funcionalidad/crearF/CrearF";
 import AgregarF from "./pages/Rol/agregarF/AgregarF";
+import EditarF from "./pages/funcionalidad/editarF/EditarF";
 //import PiePagina from "./components/PiePagina/PiePagina";
 import Login from "./pages/login/Login";
 import './styles/global.scss'
@@ -84,6 +85,10 @@ function App() {
           {
             path:"/home/editarR",
             element:<EditarR/>
+          },
+          {
+            path:"/home/editarF",
+            element:<EditarF/>
           },
           {
             path:"/home/producto",

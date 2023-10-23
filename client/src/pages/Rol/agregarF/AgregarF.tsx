@@ -29,11 +29,11 @@ const AgregarF = () => {
     };
   
     return (
-      <div className='contenedor'>
-        <h1>Nuevo Usuario</h1>
+      <div className='contenedor' style={{ marginTop:'-70px' }}>
+        <h1>Asignar Funcionalidad</h1>
         <form onSubmit={handleSubmit} className='formulario'>
           <div >
-            <label htmlFor="nombre">Nombre:</label>
+            <label htmlFor="nombre" style={{ fontSize:'25px' }}>Nombre:</label>
             <input
               type="text"
               id="nombre"
@@ -43,16 +43,15 @@ const AgregarF = () => {
             />
           </div>
           <div>
-          <label htmlFor="rol">Rol:</label>
-          <input />
+          <label htmlFor="funcion" style={{ fontSize:'25px' }}>Funcionalidades:</label>
           <div>
              {funcionalidades.map((fun)=>(
-                <label key={fun.id}><input type="checkbox" />{fun.nombre}</label>
+                <label key={fun.id} style={{ display: 'flex', alignItems:'center' }}><input type="checkbox" style={{ width: '20px', marginRight: '8px' }} />{fun.nombre}</label>
                 
              ))}
           </div>
           </div>
-          <button type="submit">Crear</button>
+          <button type="submit">Asignar</button>
           <button type="submit">Cancelar</button>
         </form>
       </div>
