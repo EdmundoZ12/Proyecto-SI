@@ -11,7 +11,7 @@ const Example=({show,handleClose}: { show: boolean; handleClose: () => void})=>{
         <Modal.Header closeButton>
           <Modal.Title>Eliminar</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Esta Seguro Que Desea Eliminar A Este Usuario?</Modal.Body>
+        <Modal.Body>Esta Seguro Que Desea Eliminar?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Cancelar

@@ -1,7 +1,6 @@
 import React, { useState,} from 'react'
 import "./editar.scss"
 import { Link } from 'react-router-dom';
-import Usuario from '../Usuario'
 const Editar=()=>{
     const [formData, setFormData] = useState({
         nombre: '',

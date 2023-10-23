@@ -3,6 +3,8 @@ import{user} from "../../usuario"
 import Example from "./eliminar/Eliminar"
 import { Link } from 'react-router-dom';
 import "./usuario.scss"
+import{BiEdit} from 'react-icons/bi'
+import{AiTwotoneDelete} from 'react-icons/ai'
 
 const Usuario = () => {
 
@@ -10,13 +12,11 @@ const Usuario = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  
-
   return (
     <>
     <div className="usuario">
       <div>
-         <Link to="/a/crear">
+         <Link to="/home/crear">
       <button className="boton">Crear Usuario</button>
         </Link>  
        </div>
@@ -48,11 +48,12 @@ const Usuario = () => {
               <td>{usuario.usuario}</td>
               
                 <div className="botones">
-              <Link to="/a/editar">
-                <button className="editar">Editar</button>
+              <Link to="/home/editar">
+                <BiEdit size='40px' gap='20px' color='blue' />
+                
               </Link>
-              
-                <button className="eliminar" onClick={handleShow}>Eliminar</button>
+                
+              <AiTwotoneDelete size='40px' gap='20px' color='red' onClick={handleShow} />
                 </div>
                 
             </tr>

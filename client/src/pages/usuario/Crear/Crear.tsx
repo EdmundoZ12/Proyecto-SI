@@ -1,4 +1,4 @@
-import React, { useState,useEffect} from 'react'
+import React, { useState,} from 'react'
 import "./crear.scss"
 const Crear = () => {
     const [formData, setFormData] = useState({
@@ -30,17 +30,7 @@ const Crear = () => {
       };
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
-      useEffect(() => {
-        fetch("http",{
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        })
-        .then(response =>response.json())
-        .then((data)=>setFormData(data))
-        },[]);
+      // Aquí puedes enviar los datos del formulario a tu servidor o realizar otras acciones con ellos.
       console.log(formData);
     };
   

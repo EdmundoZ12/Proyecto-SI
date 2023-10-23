@@ -32,3 +32,25 @@ export const user=[
     
    
 ]
+export const funcionalidades=[
+    {
+        id:1,
+        nombre:"Usuario.crear",
+        descripcion:"crea un nuevo usuario",
+    },
+    {
+        id:2,
+        nombre:"Usuario.ver",
+        descripcion:"el usuario puede ver mas informacion",
+    },
+    {
+        id:3,
+        nombre:"Usuario.eliminar",
+        descripcion:"elimina un usuario",
+    },
+    {
+        id:4,
+        nombre:"Usuario.editar",
+        descripcion:"puede editar datos",
+    }
+]

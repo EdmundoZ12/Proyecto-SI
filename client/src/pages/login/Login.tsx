@@ -1,11 +1,10 @@
 import "./login.scss";
 import React, { Component } from 'react';
-import axios from 'axios';
 import Cookies from 'universal-cookie';
 //import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-const url='http://localhost:3001/usuarios'
-const cookies =new Cookies();
+const url=''
+//const cookies =new Cookies();
 class Login extends Component{
     state={
         form:{
@@ -24,20 +23,19 @@ class Login extends Component{
     }
 
     iniciarsecion=async()=>{
-        /*await axios.get(url, {params:{username:this.state.form.username, password:this.state.form.password}})
-        .then(response=>{
-            return response.data;
+        fetch(url,{
+            method:'POST',
+            headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+            body:JSON.stringify(this.state.form)
         })
+        .then(response=>response.json())
         .then(response=>{
             if(response.length>0){
-                var respuesta=response[0]
-                cookies.set('id', respuesta.id, {path:'/'});
-                cookies.set('apellido_paterno', respuesta.apellidop_aterno, {path:'/'});
-                cookies.set('apellido_materno', respuesta.apellido_materno, {path:'/'});
-                cookies.set('nombre', respuesta.nombre, {path:'/'});
-                cookies.set('username', respuesta.username, {path:'/'});
-                //alert(`Bienvenido ${respuesta.nombre}`);
-                window.location.href='./App';
+                console.log(response)
+                window.location.href='/home';
 
             }else{
                 alert('el usuario o la contraseña no son correctos')
@@ -45,14 +43,13 @@ class Login extends Component{
         })
         .catch(error=>{
             console.log(error);
-        })*/
-        window.location.href='/a';
+        })
     }
-    componentDidMount(){
+    /*componentDidMount(){
         if(cookies.get('username')){
             //window.location.href='./menu'
         }
-    }
+    }*/
 
 
     render(){
@@ -62,12 +59,12 @@ class Login extends Component{
 
               <div className='figure'>
                   <div className='title'>
-                      <h2>Login</h2>
+                      <h2>Iniciar Sesion</h2>
                   </div>
               </div>
               <div className='form'>
                   <div className='data'>
-                      <label>Username<input placeholder='Username' /></label>
+                      <label>Usuario<input placeholder='Username' /></label>
                       <label>Password<input type='password' placeholder='Password' /></label>
                   </div>
                   <div className='recover'>

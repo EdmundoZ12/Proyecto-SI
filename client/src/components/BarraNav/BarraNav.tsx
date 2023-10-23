@@ -4,6 +4,8 @@ import { ImExit } from 'react-icons/im';
 import gym from "../../../public/Gym.svg"
 import wilson from "../../../public/wilson.svg"
 import fin from "../../../public/LogoFin.svg"
+import { Link } from 'react-router-dom';
+
 const BarraNav = () => {
 
  
@@ -27,8 +29,10 @@ const BarraNav = () => {
         </div>
         <div>
        
+        <Link to='/'>
+        <ImExit size='25px' gap='20px' color='red' />
+        </Link>
         
-        <ImExit size='25px' gap='20px' color='red'/>
        
       
     </div>

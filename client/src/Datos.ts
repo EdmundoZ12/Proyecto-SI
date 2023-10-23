@@ -6,13 +6,18 @@ export const menu=[
         lista:[
             {   id:1,
                 titulo:"Pagina de Inicio",
-                URL:"/",
+                URL:"/home",
                 icono:"home.svg",
             },
             {   id:2,
-                titulo:"Perfil",
-                URL:"/usuario/1",
+                titulo:"Roles",
+                URL:"/home/rol",
                 icono:"user.svg",
+            },
+            {
+              id:3,
+              titulo:"Funcionalidades",
+              URL:"/home/funcion"
             },
         ],
     },
@@ -23,13 +28,13 @@ export const menu=[
           {
             id: 1,
             titulo: "Usuario",
-            URL: "/usuario",
+            URL: "/home/usuario",
             icono: "user.svg",
           },
           {
             id: 2,
             titulo: "Producto",
-            URL: "/login",
+            URL: "/home/rol",
             icono: "product.svg",
           },
           {
@@ -44,7 +49,6 @@ export const menu=[
             URL: "/posts",
             icono: "post2.svg",
           },
-          
         ],
       },
      
@@ -102,3 +106,23 @@ export const topDealUsers = [
     amount: "1.560",
   },
 ];
+
+export const roles=[
+  {
+    id:1,
+    nombre:"Administrador"
+  },
+  {
+    id:2,
+    nombre:"Entrenador"
+  },
+
+]
+
+export const funcion=[
+  {
+    id:1,
+    nombre:"crear usuario",
+    descripcion:"crea un usuario"
+  }
+]

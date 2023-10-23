@@ -40,6 +40,10 @@
     background-color: $main-bg;
   }
 
+  .botones{
+    background-color: $main-bg;
+    cursor: pointer;
+  }
  
 }
 
@@ -75,20 +79,5 @@
       }
 }
 
-.editar{
-    margin: 0 15px;
-
-    background-color: #082f9b;
-    color: #fff;
-    padding: 5px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-
-    &:hover {
-      background-color: #0056b3;
-    }
-}
 
 
