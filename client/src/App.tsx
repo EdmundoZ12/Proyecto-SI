@@ -1,116 +1,91 @@
-import Home from "./pages/home/Home"
-import { createRoot } from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Outlet
-} from "react-router-dom";
-import Usuario from "./pages/usuario/Usuario";
-import Producto from "./pages/producto/Producto";
-import Crear from "./pages/usuario/Crear/Crear";
-import Editar from "./pages/usuario/editar/Editar";
-import EditarR from "./pages/Rol/editarR/EditarR";
-import BarraNav from "./components/BarraNav/BarraNav";
-import Menu from "./components/Menu/Menu";
-import Funcion from "./pages/funcionalidad/Funcion";
-import CrearF from "./pages/funcionalidad/crearF/CrearF";
-import AgregarF from "./pages/Rol/agregarF/AgregarF";
-import EditarF from "./pages/funcionalidad/editarF/EditarF";
-//import PiePagina from "./components/PiePagina/PiePagina";
+import Home from "./pages/home/Home";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import Users from "./pages/users/Users";
+import Products from "./pages/products/Products";
+import Navbar from "./components/navbar/Navbar";
+import Footer from "./components/footer/Footer";
+import Menu from "./components/menu/Menu";
 import Login from "./pages/login/Login";
-import './styles/global.scss'
-import Rol from "./pages/Rol/Rol";
-import CrearRol from "./pages/Rol/crearRol/CrearRol";
+import "./styles/global.scss";
+import User from "./pages/user/User";
+import Product from "./pages/product/Product";
+import Funcion from "./pages/funcionalidades/Funcion";
+import RolEdit from "./pages/RolEdit/RolEdit"
+import Funcionedit from "./pages/FuncionEdit/FuncionEdit";
+import {
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
+
+const queryClient = new QueryClient();
 
 function App() {
-  
-  const Layout =()=>{
-    return(
-      <div className="menu">
-        <BarraNav/>
+  const Layout = () => {
+    return (
+      <div className="main">
+        <Navbar />
         <div className="container">
           <div className="menuContainer">
-            <Menu/>
+            <Menu />
           </div>
           <div className="contentContainer">
-            <Outlet/>
+            <QueryClientProvider client={queryClient}>
+              <Outlet />
+            </QueryClientProvider>
           </div>
         </div>
-        
+        <Footer />
       </div>
-    )
-  }
-
-
+    );
+  };
 
   const router = createBrowserRouter([
     {
       path: "/home",
-      element:<Layout/>,
-      children:[
-        
-          {
-            path:"/home",
-            element:<Home/>
-          },
-          {
-              path:"/home/rol",
-              element:<Rol/>
-          },
-          {
-            path:"/home/funcion",
-            element:<Funcion/>
-          },
-          {
-            path:"/home/crearF",
-            element:<CrearF/>
-          },
-          {
-            path:"/home/crearRol",
-            element:<CrearRol/>
+      element: <Layout />,
+      children: [
+        {
+          path: "/home",
+          element: <Home />,
         },
-          {
-            path:"/home/usuario",
-            element:<Usuario/>,
-          },
-          {
-            path:"/home/crear",
-            element:<Crear/>
-          },
-          {
-             path:"/home/editar",
-             element:<Editar/>
-          },
-          {
-            path:"/home/editarR",
-            element:<EditarR/>
-          },
-          {
-            path:"/home/editarF",
-            element:<EditarF/>
-          },
-          {
-            path:"/home/producto",
-            element:<Producto/>
-          },
-          {
-            path:"/home/agregarF",
-            element:<AgregarF/>
-          }
-          
-      ]
+        {
+          path: "/home/users",
+          element: <Users />,
+        },
+        {
+          path: "/home/products",
+          element: <Products />,
+        },
+        {
+          path:"/home/funcion",
+          element:<Funcion/>
+        },
+        {
+          path: "/home/users/:id",
+          element: <User/>,
+        },
+        {
+          path:"/home/products/:id",
+          element:<RolEdit/>
+        },
+        {
+          path:"/home/funcion/:id",
+          element:<Funcionedit/>
+        },
+        //{
+        //  path: "/products/:id",
+        //  element: <Product />,
+        //},
+      ],
     },
+    {
+      path: "/",
+      element: <Login />,
+    },
+  ]);
 
-          {
-            path:"/",
-            element: <Login/>
-          }
-    ]);
-
-  return (
-    <RouterProvider router={router}/>
-  )
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;

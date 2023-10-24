@@ -1,31 +1,23 @@
-import {Link} from 'react-router-dom'
-import './menu.scss'
-import{menu} from "../../Datos"
+import { Link } from "react-router-dom";
+import "./Menu.scss";
+import { menu } from "../../data";
+
 const Menu = () => {
   return (
-    <div className='menu'>
-      {menu.map(item=>(
-
-      
-        <div className='item' key={item.id}>
-        <span className='TiTulo'>{item.titulo}</span>
-        {item.lista.map((lista)=>(
-
-          <Link to={lista.URL} className='listaItem' key={lista.id}>
-          <img src={lista.icono} alt="" />
-          <span className='lista'>{lista.titulo}</span>
-          </Link>
-
-        ))}
-        
-       
-      </div>
-
+    <div className="menu">
+      {menu.map((item) => (
+        <div className="item" key={item.id}>
+          <span className="title">{item.title}</span>
+          {item.listItems.map((listItem) => (
+            <Link to={`/home${listItem.url}`} className="listItem" key={listItem.id}>
+              <img src={listItem.icon} alt="" />
+              <span className="listItemTitle">{listItem.title}</span>
+            </Link>
+          ))}
+        </div>
       ))}
-     
-
     </div>
-  )
-}
+  );
+};
 
-export default Menu
+export default Menu;
