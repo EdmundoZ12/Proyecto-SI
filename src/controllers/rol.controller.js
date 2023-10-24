@@ -14,12 +14,21 @@ const getRol = async(req, res) => {
     const { id } = req.params;
 
     try {
-        const value = await pool.query(`select rol.id,rol.nombre,id_funcionalidad,funcionalidad.nombre,descripcion 
+
+        const rol = await pool.query('select nombre,id from rol where id=$1', [id]);
+
+        const value = await pool.query(`select id_funcionalidad,funcionalidad.nombre,descripcion 
                                         from rol,permiso_rol,funcionalidad
                                         where rol.id=permiso_rol.id_rol and 
                                         permiso_rol.id_funcionalidad=funcionalidad.id and
-                rol.id=$1`, [id]);
-        res.json(value.rows);
+                                        rol.id=$1`, [id]);
+
+        const resultado = {
+            "rol": rol.rows,
+            "permisos": value.rows
+        }
+
+        res.json(resultado);
     } catch (error) {
         res.json(error);
     }
