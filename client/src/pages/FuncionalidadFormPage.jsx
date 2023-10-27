@@ -21,7 +21,7 @@ export function FuncionalidadFormPage() {
   } = useForm();
 
   // Estado para el checkbox "activo"
-  const [activo, setActivo] = useState(false);
+  const [activo, setActiv] = useState(false);o
 
   const onSubmit = async (data) => {
     try {
@@ -48,6 +48,7 @@ export function FuncionalidadFormPage() {
     const loadTask = async () => {
       if (params.id) {
         const task = await getFuncionalidad(params.id);
+        console.log(task)
         setValue("nombre", task.nombre);
         setValue("descripcion", task.descripcion);
 

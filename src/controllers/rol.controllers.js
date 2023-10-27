@@ -73,7 +73,8 @@ const createRol = async(req, res) => {
 
 
 const updateRol = async(req, res) => {
-    const { id, nombre, permisos } = req.body;
+  const id=req.params.id;
+    const {  nombre, permisos } = req.body;
 
     try {
         const existingRol = await pool.query(
