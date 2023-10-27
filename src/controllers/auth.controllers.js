@@ -1,0 +1,95 @@
+const { json } = require("express");
+const pool = require("../db");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { createAccessToken } = require("../libs/jwt");
+
+const login = async (req, res) => {
+  //obtener datos de una tarea especifica
+  const { username, password } = req.body;
+  try {
+    const usuario = await pool.query(
+      "SELECT * FROM Usuario WHERE Username=$1 ",
+      [username]
+    );
+
+    if (usuario.rows.length === 0) {
+      return res.status(400).json({ message: "Usuario no encontrado" });
+    }
+   
+    const user = usuario.rows[0];
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Incorrect password" });
+    }
+    const token = await createAccessToken({ id: user.id_persona });
+
+    res.cookie("token", token);
+    res.json({ id: user.id_persona, username: user.username });
+    // La tarea ya existe, puedes devolver un mensaje personalizado si lo deseas
+  } catch (error) {
+    // Otros errores
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const logout = (req, res) => {
+  res.cookie("token", "", {
+    expires: new Date(0),
+  });
+  return res.sendStatus(200);
+};
+
+const profile = async (req, res) => {
+  const userFound = await pool.query("SELECT * FROM Usuario WHERE id=$1", [
+    req.user.id,
+  ]);
+
+  if (userFound.rows.length === 0) {
+    return res.status(400).json({ mensaje: "Usuario no encontrado." });
+  }
+
+  return res.json({
+    id: userFound.rows[0].id,
+    ussername: userFound.rows[0].ussername,
+  });
+};
+
+const verifyToken = async (req, res) => {
+  const { token } = req.cookies;
+  
+  if (!token) {
+    return res.status(401).json({ message: "No Autorizado" });
+  }
+
+  try {
+    const decodedToken = jwt.verify(token, TOKEN_SECRET);
+    
+    
+    const usuario = await pool.query("SELECT * FROM Usuario WHERE Id_Persona = $1", [
+      decodedToken.id_persona
+    ]);
+
+    if (usuario.rows.length === 0) {
+      return res.status(400).json({ mensaje: "Usuario no encontrado." });
+    }
+
+    const user = {
+      id: usuario.id_persona,
+      username: usuario.username
+    };
+
+    res.json(user);
+  } catch (error) {
+    res.status(401).json({ message: "Token no válido" });
+  }
+};
+
+
+
+module.exports = {
+  login,
+  logout,
+  profile,
+  verifyToken
+};
