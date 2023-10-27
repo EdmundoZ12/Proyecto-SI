@@ -21,7 +21,7 @@ export function FuncionalidadFormPage() {
   } = useForm();
 
   // Estado para el checkbox "activo"
-  const [activo, setActiv] = useState(false);o
+  const [activo, setActivo] = useState(false);
 
   const onSubmit = async (data) => {
     try {
