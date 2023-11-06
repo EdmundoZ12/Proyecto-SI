@@ -1,5 +1,6 @@
 const express = require("express");
-const pool = require('pg');
+// const pool = require('pg');
+const pool = require("../src/db");
 const morgan = require('morgan');
 const cors = require('cors');
 
@@ -33,6 +34,34 @@ app.use('/permiso', funcionalidadesRoute);
 app.use('/proveedor', proveedorRoute);
 app.use('/inventario', inventarioRoute);
 app.use('/producto', productoRoute);
+
+
+
+
+
+const getRoles = async(req, res) => {
+    try {
+        const value = await pool.query("select * from categoria");
+        res.json(value.rows);
+    } catch (error) {
+        res.json(error);
+    }
+};
+
+const getproveedor = async(req, res) => {
+    try {
+        const value = await pool.query("select * from proveedor");
+        res.json(value.rows);
+    } catch (error) {
+        res.json(error);
+    }
+};
+
+app.get('/categoria', getRoles);
+app.get('/proveedor', getproveedor);
+
+
+
 
 
 

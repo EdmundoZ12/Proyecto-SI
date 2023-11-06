@@ -6,9 +6,10 @@ const tabla = 'producto';
 // get roles
 const getProductos = async(req, res) => {
     try {
-        const value = await pool.query(`select producto.cod,producto.nombre,producto.descripcion,producto.precio,categoria.nombre as categoria
-                                        from producto
-                                        join categoria on categoria.id=producto.cod`);
+        const value = await pool.query(`select producto.cod,producto.nombre,producto.descripcion,producto.precio,categoria.nombre as categoria,categoria.id as id_categoria
+                                        from producto, categoria 
+                                        where categoria.id=producto.id_categoria
+                                        ORDER BY producto.cod ASC;`);
         res.json(value.rows);
     } catch (error) {
         res.json(error);
@@ -97,7 +98,7 @@ const updateProducto = async(req, res) => {
 
 
         const updateResult = await pool.query(
-            "UPDATE producto SET nombre=$1, descripcion=$2, precio=$3, id_categoria=$4  RETURNING *", [nombre, descripcion, precio, id_categoria]
+            "UPDATE producto SET nombre=$1, descripcion=$2, precio=$3, id_categoria=$4 where cod=$5 RETURNING *", [nombre, descripcion, precio, id_categoria, id]
         );
 
         if (updateResult.rowCount === 0) {
