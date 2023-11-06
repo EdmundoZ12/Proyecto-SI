@@ -125,9 +125,9 @@ const deleteProducto = async(req, res) => {
 
         if (existingRol.rowCount != 0) {
 
-            // const valor = await pool.query(
-            //     `update ${tabla} set activo=false where id=$1`, [id]
-            // );
+            const valor = await pool.query(
+                `delete from ${tabla} where cod=$1`, [id]
+            );
             res.json({ succes: "Producto desactivado" });
 
         } else {
