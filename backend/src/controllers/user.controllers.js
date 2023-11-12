@@ -72,9 +72,11 @@ const CreateUsuario = async (req, res) => {
 const getUsers = async (req, res) => {
     try {
       const result = await pool.query("SELECT Persona.*,Usuario.Username, Usuario.password ,Usuario.Id_Rol,Usuario.Direccion,Usuario.Activo FROM Usuario,Persona Where Persona.Id=Usuario.Id_Persona");
+      
       res.json(result.rows);
     } catch (error) {
       res.status(500).json({ message: error.message });
+      
     }
   };
   
