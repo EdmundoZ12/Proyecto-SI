@@ -11,7 +11,7 @@ const { validateSchema } = require("../middlewares/validator.middleware");
 const { createUserSchema } = require("../schemas/users.schema");
 const router = Router();
 
-router.get("/user", authRequired, getUsers);
+router.get("/user", getUsers);
 router.get("/user/:username", authRequired, getUser);//const  username  = req.params.username;
 router.post(
   "/user",
