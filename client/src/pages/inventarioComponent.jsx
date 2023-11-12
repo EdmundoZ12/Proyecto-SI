@@ -76,7 +76,7 @@ export default function ProductoComponent() {
         // Realiza la consulta a la API y guarda los resultados en "allData"
         const fetchData = async () => {
           try {
-            const response = await fetch('http://localhost:3500/producto/index');
+            const response = await fetch('https://wylsomgym.onrender.com/producto/index');
             if (response.ok) {
               const data = await response.json();
               setProducts(data);
@@ -107,7 +107,7 @@ export default function ProductoComponent() {
       useEffect(() => {
         // Realiza una solicitud GET a la API externa usando fetch
         // fetch('https://fakestoreapi.com/products')
-        fetch('http://localhost:3500/proveedor/index')
+        fetch('https://wylsomgym.onrender.com/proveedor/index')
 
           .then((response) => {
             // Verifica si la solicitud fue exitosa y obtén los datos
@@ -129,7 +129,7 @@ export default function ProductoComponent() {
 
     //fetch inventario
     useEffect(() => {
-        fetch('http://localhost:3500/inventario/index')
+        fetch('https://wylsomgym.onrender.com/inventario/index')
 
           .then((response) => {
             // Verifica si la solicitud fue exitosa y obtén los datos
@@ -223,7 +223,7 @@ export default function ProductoComponent() {
             };
     
             // Realiza la solicitud POST a tu API
-            fetch('http://localhost:3500/producto/create', {
+            fetch('https://wylsomgym.onrender.com/producto/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

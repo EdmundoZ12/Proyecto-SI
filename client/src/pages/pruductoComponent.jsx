@@ -62,7 +62,7 @@ export default function ProductoComponent() {
     useEffect(() => {
         // Realiza una solicitud GET a la API externa usando fetch
         // fetch('https://fakestoreapi.com/products')
-        fetch('http://localhost:3500/categoria/index')
+        fetch('https://wylsomgym.onrender.com/categoria/index')
 
           .then((response) => {
             // Verifica si la solicitud fue exitosa y obtén los datos
@@ -87,7 +87,7 @@ export default function ProductoComponent() {
     useEffect(() => {
         // Realiza una solicitud GET a la API externa usando fetch
         // fetch('https://fakestoreapi.com/products')
-        fetch('http://localhost:3500/producto/index')
+        fetch('https://wylsomgym.onrender.com/producto/index')
 
           .then((response) => {
             // Verifica si la solicitud fue exitosa y obtén los datos
@@ -150,7 +150,7 @@ export default function ProductoComponent() {
                 };
                 
 
-                fetch('http://localhost:3500/producto/update/'+product.cod, {
+                fetch('https://wylsomgym.onrender.com/producto/update/'+product.cod, {
                     method: 'PUT',
                     headers: {
                     'Content-Type': 'application/json',
@@ -177,7 +177,7 @@ export default function ProductoComponent() {
                 };
                 console.log(datos);
                 console.log('yameasd')
-                fetch('http://localhost:3500/producto/create', {
+                fetch('https://wylsomgym.onrender.com/producto/create', {
                     method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
@@ -225,7 +225,7 @@ export default function ProductoComponent() {
 
     
 
-        fetch('http://localhost:3500/producto/delete/'+product.cod, {
+        fetch('https://wylsomgym.onrender.com/producto/delete/'+product.cod, {
             method: 'DELETE',
             headers: {
             'Content-Type': 'application/json',
