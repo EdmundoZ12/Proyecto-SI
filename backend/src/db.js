@@ -5,7 +5,7 @@ config()
 
 const pool=new Pool({
     connectionString:process.env.DATABASE_URL,
-    ssl:true
+    //ssl:true
     /*user: db.user,
     password: db.password,
     host: db.host,
