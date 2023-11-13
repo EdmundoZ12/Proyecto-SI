@@ -12,13 +12,13 @@ const { createUserSchema } = require("../schemas/users.schema");
 const router = Router();
 
 router.get("/user", getUsers);
-router.get("/user/:username", authRequired, getUser);//const  username  = req.params.username;
+router.get("/user/:username",  getUser);//const  username  = req.params.username;
 router.post(
   "/user",
   validateSchema(createUserSchema),
   CreateUsuario
 );
-router.delete("/user/:username", authRequired, deleteUser);
-router.put("/user/:id", authRequired, updatePersonAndUser);
+router.delete("/user/:username",  deleteUser);
+router.put("/user/:id",  updatePersonAndUser);
 
 module.exports = router;
