@@ -77,8 +77,8 @@ const verifyToken = async (req, res) => {
     }
 
     const user = {
-      id:usuario.id,
-      username: usuario.username
+      id:usuario.rows[0].id,
+      username: usuario.rows[0].username
     };
 
     res.json(user);
