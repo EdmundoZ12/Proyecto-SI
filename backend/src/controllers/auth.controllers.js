@@ -25,7 +25,8 @@ const login = async (req, res) => {
     }
     const token = await createAccessToken({ id: user.id_persona });
 
-    res.cookie("token", token);
+    res.cookie("token", token, { sameSite: "None", secure: true });
+
     res.json({ id: user.id_persona, username: user.username });
     // La tarea ya existe, puedes devolver un mensaje personalizado si lo deseas
   } catch (error) {
