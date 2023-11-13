@@ -15,7 +15,6 @@ router.get("/user", getUsers);
 router.get("/user/:username", authRequired, getUser);//const  username  = req.params.username;
 router.post(
   "/user",
-  authRequired,
   validateSchema(createUserSchema),
   CreateUsuario
 );
