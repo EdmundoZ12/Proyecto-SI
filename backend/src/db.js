@@ -1,16 +1,8 @@
 const {Pool} = require('pg');
 const {db} = require('./config');
-const { config } = require("dotenv");
-config()
 
 const pool=new Pool({
-    connectionString:process.env.DATABASE_URL,
-    //ssl:true
-    /*user: db.user,
-    password: db.password,
-    host: db.host,
-    port: db.port,
-    database: db.database*/
+    connectionString:'postgres://edmundo:O9TaecdxXFPRfGxjTB40ME4h9IqqoI99@dpg-cl8jmjn6e7vc73a7449g-a.oregon-postgres.render.com/dbgimmasio'
 });
 
 module.exports=pool;
