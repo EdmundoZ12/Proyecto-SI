@@ -26,7 +26,7 @@ app.use(cookieParser());
 app.use('/api',authRoutes)
 app.use('/api',rolesRoutes)
 app.use('/api',funcionalidadRoutes)
-app.use('/api',taskRoutes)
+app.use('/api',taskRoutes) 
 app.use('/api',userRoutes)
 app.use('/proveedor', proveedorRoute);
 app.use('/inventario', inventarioRoute);
