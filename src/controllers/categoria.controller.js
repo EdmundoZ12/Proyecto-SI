@@ -1,10 +1,10 @@
 const pool = require("../db");
 
 // tabla global a usar
-const tabla = 'proveedor';
+const tabla = 'categoria';
 
 // get roles
-const getProveedores = async(req, res) => {
+const getCategorias = async(req, res) => {
     try {
         const value = await pool.query(`select * from ${tabla}`);
         res.json(value.rows);
@@ -13,7 +13,7 @@ const getProveedores = async(req, res) => {
     }
 };
 
-const getProveedor = async(req, res) => {
+const getCategoria = async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -27,21 +27,21 @@ const getProveedor = async(req, res) => {
 };
 
 
-const createProveedor = async(req, res) => {
-    const { empresa, telefono } = req.body;
+const createCategoria = async(req, res) => {
+    const { nombre, descripcion } = req.body;
 
     try {
 
-        if (!empresa || !telefono) {
-            return res.status(400).json({ error: "Los campos empresa y teléfono son obligatorios." });
+        if (!nombre || !descripcion) {
+            return res.status(400).json({ error: "Los campos nombre y descripcion son obligatorios." });
         }
 
         const existingProvider = await pool.query(
-            `SELECT * FROM ${tabla} WHERE empresa = $1`, [empresa]
+            `SELECT * FROM ${tabla} WHERE nombre = $1`, [nombre]
         );
 
         if (existingProvider.rowCount > 0) {
-            return res.status(400).json({ error: "El proveedor ya existe." });
+            return res.status(400).json({ error: "La categoria ya existe." });
         }
 
 
@@ -52,7 +52,7 @@ const createProveedor = async(req, res) => {
             await client.query("BEGIN");
 
             // Insertar el proveedor
-            const insertResult = await client.query("INSERT INTO proveedor (empresa, telefono) VALUES ($1, $2) RETURNING *", [empresa, telefono]);
+            const insertResult = await client.query("INSERT INTO categoria (nombre, descripcion) VALUES ($1, $2) RETURNING *", [nombre, descripcion]);
 
             // Confirmar la transacción
             await client.query("COMMIT");
@@ -72,31 +72,31 @@ const createProveedor = async(req, res) => {
 };
 
 
-const updateProveedor = async(req, res) => {
+const updateCategoria = async(req, res) => {
     const { id } = req.params;
-    const { empresa, telefono } = req.body;
+    const { nombre, descripcion } = req.body;
 
     try {
 
-        if (!empresa || !telefono) {
-            return res.status(400).json({ error: "Los campos empresa y teléfono son obligatorios." });
+        if (!nombre || !descripcion) {
+            return res.status(400).json({ error: "Los campos nombre y empresa son obligatorios." });
         }
 
         const existingProvider = await pool.query(
-            "SELECT * FROM proveedor WHERE empresa = $1 AND id <> $2", [empresa, id]
+            "SELECT * FROM categoria WHERE nombre = $1 AND id <> $2", [nombre, id]
         );
 
         if (existingProvider.rowCount > 0) {
-            return res.status(400).json({ error: "El proveedor ya existe." });
+            return res.status(400).json({ error: "La categoria ya existe." });
         }
 
 
         const updateResult = await pool.query(
-            "UPDATE proveedor SET empresa = $1, telefono = $2 WHERE id = $3 RETURNING *", [empresa, telefono, id]
+            "UPDATE categoria SET nombre = $1, descripcion = $2 WHERE id = $3 RETURNING *", [nombre, descripcion, id]
         );
 
         if (updateResult.rowCount === 0) {
-            return res.status(404).json({ error: "Proveedor no encontrado." });
+            return res.status(404).json({ error: "categoria no encontrada." });
         }
 
         res.json(updateResult.rows[0]);
@@ -108,7 +108,7 @@ const updateProveedor = async(req, res) => {
 };
 
 
-const deleteProveedor = async(req, res) => {
+const deleteCategoria = async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -134,7 +134,7 @@ const deleteProveedor = async(req, res) => {
 };
 
 
-const activateProveedor = async(req, res) => {
+const activateCategoria = async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -151,7 +151,7 @@ const activateProveedor = async(req, res) => {
             res.json({ succes: "Proveedor activado" });
 
         } else {
-            res.status(400).json({ error: "El proveedor no existe." });
+            res.status(400).json({ error: "El Categoria no existe." });
         }
 
     } catch (error) {
@@ -160,10 +160,10 @@ const activateProveedor = async(req, res) => {
 };
 
 module.exports = {
-    getProveedores,
-    createProveedor,
-    updateProveedor,
-    deleteProveedor,
-    activateProveedor,
-    getProveedor
+    getCategorias,
+    createCategoria,
+    updateCategoria,
+    deleteCategoria,
+    activateCategoria,
+    getCategoria
 };

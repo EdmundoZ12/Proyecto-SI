@@ -12,6 +12,8 @@ const funcionalidadesRoute = require('./routes/funcionalidades.routes.js');
 const proveedorRoute = require('./routes/proveedor.routes.js');
 const inventarioRoute = require('./routes/inventario.routes.js');
 const productoRoute = require('./routes/producto.routes.js');
+const categoriaRoute = require('./routes/categoria.routes.js');
+
 
 const clienteRoute = require('./routes/cliente.routes');
 
@@ -37,6 +39,8 @@ app.use('/permiso', funcionalidadesRoute);
 app.use('/proveedor', proveedorRoute);
 app.use('/inventario', inventarioRoute);
 app.use('/producto', productoRoute);
+app.use('/categoria', categoriaRoute);
+
 
 app.use('/cliente', clienteRoute);
 
