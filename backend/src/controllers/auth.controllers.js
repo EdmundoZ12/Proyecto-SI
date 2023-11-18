@@ -60,7 +60,7 @@ const profile = async (req, res) => {
 
 const verifyToken = async (req, res) => {
   const { token } = req.cookies;
-  console.log(token)
+  console.log(token);
   
   if (!token) {
     return res.status(401).json({ message: "No Autorizado" });
@@ -68,7 +68,7 @@ const verifyToken = async (req, res) => {
 
   try {
     const decodedToken = jwt.verify(token, TOKEN_SECRET);
-    console.log(decodedToken.id)
+    console.log(decodedToken.id);
     const usuario = await pool.query("SELECT * FROM Usuario WHERE Id_Persona = $1", [
       decodedToken.id
     ]);
@@ -78,9 +78,12 @@ const verifyToken = async (req, res) => {
     }
 
     const user = {
-      id:usuario.id,
+      id: usuario.id,
       username: usuario.username
     };
+
+    const newToken = await createAccessToken({ id: user.id });
+    res.cookie("token", newToken, { httpOnly: true, secure: true, sameSite: "None" });
 
     res.json(user);
   } catch (error) {
