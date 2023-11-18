@@ -33,7 +33,7 @@ function App() {
               <BrowserRouter>
                 <Routes>
                   <Route path="/login" element={<LoginPage />} />
-                  <Route path="/" element={<Page />} />
+                  <Route path="/" element={<LoginPage />} />
                   
                   <Route element={<ProtectedRoute />}>
                     <Route path="/products" element={<ProductsDemo />} />
