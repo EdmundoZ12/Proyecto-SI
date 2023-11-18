@@ -19,6 +19,7 @@ app.use(cors({
     origin:"https://wilsongym-b7e6c.firebaseapp.com",
     credentials:true
 }));
+
 app.use(morgan("dev"));
 app.use(express.json( ))
 app.use(cookieParser());
