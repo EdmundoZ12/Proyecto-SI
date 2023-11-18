@@ -38,30 +38,55 @@ const getCliente = async(req, res) => {
 
 
 const createCliente = async(req, res) => {
-    const { nombre, permisos } = req.body;
-
+    const { nombre, apellido, ci, telefono, fecha } = req.body;
+    const pfecha = '1984-11-19';
     try {
         const existingUser = await pool.query(
-            "SELECT * FROM rol WHERE nombre = $1", [nombre]
+            "SELECT * FROM persona WHERE nombre = $1", [nombre]
         );
 
         if (existingUser.rowCount === 0) {
 
-            const valor = await pool.query(
-                "insert into rol (nombre,activo) values ($1, true) returning id", [nombre]
-            );
-            const id_new = valor.rows[0].id;
 
-            for (const permisoId of permisos) {
-                await pool.query(
-                    "INSERT INTO Permiso_Rol (Id_Funcionalidad, Id_Rol) VALUES ($1,$2)", [permisoId, id_new]
+
+            // Insertar el proveedor
+            try {
+                const persona = await pool.query(
+                    "INSERT INTO Persona (Nombre, Apellido, CI, Telefono, Fecha_Nacimiento) VALUES ($1, $2,$3,$4,$5) RETURNING Id", [nombre, apellido, ci, telefono, pfecha]
                 );
+                const Id_Persona = persona.rows[0].id;
+
+                const activo = true;
+
+
+                const insertResult = await pool.query("INSERT INTO Cliente (Id_Persona,Activo) VALUES ($1, $2)", [Id_Persona, activo]);
+                console.log("cliente")
+
+                // Devolver el resultado
+                res.json({ message: "creado" });
+
+
+            } catch (error) {
+                console.log(error);
+                // await client.query("ROLLBACK");
+                throw error;
+
             }
+            // const valor = await pool.query(
+            //     "insert into rol (nombre,activo) values ($1, true) returning id", [nombre]
+            // );
+            // const id_new = valor.rows[0].id;
+
+            // for (const permisoId of permisos) {
+            //     await pool.query(
+            //         "INSERT INTO Permiso_Rol (Id_Funcionalidad, Id_Rol) VALUES ($1,$2)", [permisoId, id_new]
+            //     );
+            // }
 
 
 
             // res.json(valor.rows[0]);
-            res.json({ succes: "Rol creado" });
+            // res.json({ succes: "Rol creado" });
 
         } else {
             res.status(400).json({ error: "El nombre del rol ya existe." });
