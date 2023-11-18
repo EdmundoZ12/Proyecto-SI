@@ -32,8 +32,8 @@ function App() {
             <RolProvider>
               <BrowserRouter>
                 <Routes>
-                  <Route path="/" element={<LoginPage />} />
-                  
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/" element={<Page />} />
                   <Route element={<ProtectedRoute />}>
                     <Route path="/products" element={<ProductsDemo />} />
                     <Route
