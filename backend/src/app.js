@@ -16,7 +16,7 @@ const categoriaRoute = require('./routes/categoria.routes');
 const app=express()
 
 app.use(cors({
-    origin:"https://gymwilson.netlify.app",
+    origin:"https://wilsongym-b7e6c.firebaseapp.com",
     credentials:true
 }));
 app.use(morgan("dev"));
