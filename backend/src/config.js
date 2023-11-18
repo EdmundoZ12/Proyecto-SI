@@ -1,6 +1,6 @@
 const { config } = require("dotenv");
 config();
-
+const TOKEN_SECRET='some_secret_key3';
 module.exports = {
   db: {
     user: process.env.DB_USER,
@@ -9,6 +9,5 @@ module.exports = {
     port: process.env.DB_PORT,
     database: process.env.DB_DATABASE,
   },
-  TOKEN_SECRET: 'some_secret_key3', // Clave secreta del token de acceso
-  REFRESH_TOKEN_SECRET: 'some_refresh_secret_key', // Clave secreta del refresh token
+  TOKEN_SECRET
 };
