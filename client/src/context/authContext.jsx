@@ -88,6 +88,7 @@ export const AuthProvider=({children})=>{
           setUser(res.data);
           setLoading(false);
         } catch (error) {
+            console.error("Error al verificar el token:", error);
           setIsAuthenticated(false);
           setUser(null);
           setLoading(false);
