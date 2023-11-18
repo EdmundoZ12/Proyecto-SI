@@ -24,8 +24,8 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Incorrect password" });
     }
     const token = await createAccessToken({ id: user.id_persona });
+    res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "None" });
 
-    res.cookie("token", token, { sameSite: "None", secure: true });
 
     res.json({ id: user.id_persona, username: user.username });
     // La tarea ya existe, puedes devolver un mensaje personalizado si lo deseas
