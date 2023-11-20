@@ -51,9 +51,9 @@ app.use('/cliente', clienteRoute);
 
 
 
-const getRoles = async(req, res) => {
+const getDisciplina = async(req, res) => {
     try {
-        const value = await pool.query("select * from categoria");
+        const value = await pool.query("select cod,nombre from disciplina");
         res.json(value.rows);
     } catch (error) {
         res.json(error);
@@ -69,8 +69,19 @@ const getproveedor = async(req, res) => {
     }
 };
 
-app.get('/categoria', getRoles);
+const getTipo = async(req, res) => {
+    try {
+        const value = await pool.query("select id,tipo from pago");
+        res.json(value.rows);
+    } catch (error) {
+        res.json(error);
+    }
+};
+
+app.get('/disciplina', getDisciplina);
 app.get('/proveedor', getproveedor);
+app.get('/tipo', getTipo);
+
 
 
 

@@ -12,7 +12,7 @@ router.get("/get/:id", getCliente);
 
 router.post("/create", createCliente);
 
-router.post("/update/:id", updateCliente);
+router.put("/update/:id", updateCliente);
 
 router.get("/delete/:id", deleteCliente);
 

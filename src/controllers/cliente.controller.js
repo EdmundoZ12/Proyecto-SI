@@ -52,7 +52,7 @@ const createCliente = async(req, res) => {
             // Insertar el proveedor
             try {
                 const persona = await pool.query(
-                    "INSERT INTO Persona (Nombre, Apellido, CI, Telefono, Fecha_Nacimiento) VALUES ($1, $2,$3,$4,$5) RETURNING Id", [nombre, apellido, ci, telefono, pfecha]
+                    "INSERT INTO Persona (Nombre, Apellido, CI, Telefono, Fecha_Nacimiento) VALUES ($1, $2,$3,$4,$5) RETURNING Id", [nombre, apellido, ci, telefono, fecha]
                 );
                 const Id_Persona = persona.rows[0].id;
 
@@ -68,25 +68,13 @@ const createCliente = async(req, res) => {
 
             } catch (error) {
                 console.log(error);
-                // await client.query("ROLLBACK");
                 throw error;
 
             }
-            // const valor = await pool.query(
-            //     "insert into rol (nombre,activo) values ($1, true) returning id", [nombre]
-            // );
-            // const id_new = valor.rows[0].id;
-
-            // for (const permisoId of permisos) {
-            //     await pool.query(
-            //         "INSERT INTO Permiso_Rol (Id_Funcionalidad, Id_Rol) VALUES ($1,$2)", [permisoId, id_new]
-            //     );
-            // }
-
 
 
             // res.json(valor.rows[0]);
-            // res.json({ succes: "Rol creado" });
+            //    res.json({ succes: "cliente creado" });
 
         } else {
             res.status(400).json({ error: "El nombre del rol ya existe." });
@@ -100,37 +88,61 @@ const createCliente = async(req, res) => {
 
 
 const updateCliente = async(req, res) => {
-    const { id, nombre, permisos } = req.body;
+    const { id } = req.body;
+    const { nombre, apellido, ci, telefono, fecha } = req.body;
 
+
+    const activo = true;
+
+    console.log(id);
     try {
-        const existingRol = await pool.query(
-            "SELECT * FROM rol WHERE id = $1", [id]
+        result = await pool.query(
+            `
+            UPDATE Persona
+            SET Nombre=$1, Apellido=$2, Telefono=$3, CI=$4, Fecha_nacimiento=$5 WHERE id = $6;`, [nombre, apellido, telefono, ci, fecha, id]
         );
 
-        if (existingRol.rowCount === 1) {
-            await pool.query(
-                "UPDATE rol SET nombre = $1 WHERE id = $2", [nombre, id]
-            );
+        res.json({ message: "actualizado" });
 
 
-            await pool.query(
-                "DELETE FROM Permiso_Rol WHERE Id_Rol = $1", [id]
-            );
-
-
-            for (const permisoId of permisos) {
-                await pool.query(
-                    "INSERT INTO Permiso_Rol (Id_Funcionalidad, Id_Rol) VALUES ($1, $2)", [permisoId, id]
-                );
-            }
-
-            res.json({ success: "Rol actualizado" });
-        } else {
-            res.status(400).json({ error: "El rol con el ID proporcionado no existe." });
-        }
     } catch (error) {
-        res.status(500).json({ error: "Error interno del servidor" });
+        console.log(error);
+        res.status(500).json({ message: error.message });
     }
+
+
+
+
+
+    // try {
+    //     const existingRol = await pool.query(
+    //         "SELECT * FROM persona WHERE id = $1", [id]
+    //     );
+
+    //     if (existingRol.rowCount === 1) {
+    //         await pool.query(
+    //             "UPDATE rol SET nombre = $1 WHERE id = $2", [nombre, id]
+    //         );
+
+
+    //         await pool.query(
+    //             "DELETE FROM Permiso_Rol WHERE Id_Rol = $1", [id]
+    //         );
+
+
+    //         for (const permisoId of permisos) {
+    //             await pool.query(
+    //                 "INSERT INTO Permiso_Rol (Id_Funcionalidad, Id_Rol) VALUES ($1, $2)", [permisoId, id]
+    //             );
+    //         }
+
+    //         res.json({ success: "Rol actualizado" });
+    //     } else {
+    //         res.status(400).json({ error: "El rol con el ID proporcionado no existe." });
+    //     }
+    // } catch (error) {
+    //     res.status(500).json({ error: "Error interno del servidor" });
+    // }
 };
 
 
@@ -140,7 +152,7 @@ const deleteCliente = async(req, res) => {
     try {
 
         const existingRol = await pool.query(
-            "SELECT * FROM rol WHERE id = $1", [id]
+            "SELECT * FROM persona WHERE id = $1", [id]
         );
 
         if (existingRol.rowCount != 0) {
