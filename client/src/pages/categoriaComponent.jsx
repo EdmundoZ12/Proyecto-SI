@@ -63,7 +63,7 @@ export default function categoriaComponent() {
     useEffect(() => {
         // Realiza una solicitud GET a la API externa usando fetch
         // fetch('https://fakestoreapi.com/products')
-        fetch('https://wylsomgym.onrender.com/categoria/index')
+        fetch('http://localhost:3000/categoria/index')
 
           .then((response) => {
             // Verifica si la solicitud fue exitosa y obtén los datos
@@ -126,7 +126,7 @@ export default function categoriaComponent() {
                     descripcion: product.descripcion,
                 };
 
-                fetch('https://wylsomgym.onrender.com/categoria/update/'+product.id, {
+                fetch('http://localhost:3000/categoria/update/'+product.id, {
                     method: 'PUT',
                     headers: {
                     'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ export default function categoriaComponent() {
                     descripcion: product.descripcion,
                 };
                 console.log(datos);
-                fetch('https://wylsomgym.onrender.com/categoria/create', {
+                fetch('http://localhost:3000/categoria/create', {
                     method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
@@ -187,7 +187,7 @@ export default function categoriaComponent() {
 
     const deleteProduct = () => {
        
-        fetch('https://wylsomgym.onrender.com/categoria/delete/'+product.id, {
+        fetch('http://localhost:3000/categoria/delete/'+product.id, {
             method: 'DELETE',
             headers: {
             'Content-Type': 'application/json',

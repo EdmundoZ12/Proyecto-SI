@@ -6,17 +6,17 @@ const router = Router();
 
 
 
-router.get("/index", getCategorias);
+router.get("/categorias", getCategorias);
 
-router.get("/get/:id", getCategoria);
+router.get("/categorias/:id", getCategoria);
 
-router.post("/create", createCategoria);
+router.post("/categorias", createCategoria);
 
-router.put("/update/:id", updateCategoria);
+router.put("/categorias/:id", updateCategoria);
 
-router.delete("/delete/:id", deleteCategoria);
+router.delete("/categorias/:id", deleteCategoria);
 
-router.get("/activate/:id", activateCategoria);
+router.get("/categorias/:id", activateCategoria);
 
 
 

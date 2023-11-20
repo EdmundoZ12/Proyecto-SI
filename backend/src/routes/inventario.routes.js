@@ -6,9 +6,9 @@ const router = Router();
 
 
 
-router.get("/index", getInventarios);
+router.get("/inventario", getInventarios);
 
-router.get("/get/:id", getInventario);
+router.get("/inventario/:id", getInventario);
 
 
 

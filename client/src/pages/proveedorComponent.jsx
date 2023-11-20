@@ -61,7 +61,7 @@ export default function categoriaComponent() {
 
     useEffect(() => {
         
-        fetch('https://wylsomgym.onrender.com/proveedor/index')
+        fetch('http://localhost:3000/proveedor/index')
 
           .then((response) => {
             if (response.ok) {
@@ -124,7 +124,7 @@ export default function categoriaComponent() {
 
                 
 
-                fetch('https://wylsomgym.onrender.com/proveedor/update/'+product.id, {
+                fetch('http://localhost:3000/proveedor/update/'+product.id, {
                     method: 'PUT',
                     headers: {
                     'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ export default function categoriaComponent() {
                     telefono: product.telefono
                 };
 
-                fetch('https://wylsomgym.onrender.com/proveedor/create', {
+                fetch('http://localhost:3000/proveedor/create', {
                     method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
@@ -190,7 +190,7 @@ export default function categoriaComponent() {
     };
 
     const deleteProduct = () => {
-        fetch('https://wylsomgym.onrender.com/proveedor/delete/'+product.id, {
+        fetch('http://localhost:3000/proveedor/delete/'+product.id, {
             method: 'DELETE',
             headers: {
             'Content-Type': 'application/json',

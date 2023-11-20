@@ -6,17 +6,17 @@ const router = Router();
 
 
 
-router.get("/index", getProveedores);
+router.get("/proveedores", getProveedores);
 
-router.get("/get/:id", getProveedor);
+router.get("/proveedores/:id", getProveedor);
 
-router.post("/create", createProveedor);
+router.post("/proveedores", createProveedor);
 
-router.put("/update/:id", updateProveedor);
+router.put("/proveedores/:id", updateProveedor);
 
-router.delete("/delete/:id", deleteProveedor);
+router.delete("/proveedores/:id", deleteProveedor);
 
-router.get("/activate/:id", activateProveedor);
+router.get("/proveedores/:id", activateProveedor);
 
 
 

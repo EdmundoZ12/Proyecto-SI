@@ -2,46 +2,43 @@ import React, { useState, useEffect, useRef } from "react";
 import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { ProductService } from "./service/Func";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
-import { FileUpload } from "primereact/fileupload";
-import { Rating } from "primereact/rating";
 import { Toolbar } from "primereact/toolbar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { RadioButton } from "primereact/radiobutton";
 import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { Tag } from "primereact/tag";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { Checkbox } from "primereact/checkbox";
-import { useUsers } from "../context/userContext";
-import { useRoles } from "../context/rolContext";
+import { useCategorias } from "../context/categoriaContext";
+import { useProductos } from "../context/productoContext";
 import SideBarPage from "./SideBarPage";
 import { useForm } from "react-hook-form";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { Calendar } from "primereact/calendar";
-import { Password } from "primereact/password";
-import { Dropdown } from "primereact/dropdown";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function UsersDemo() {
+export default function ProductosDemo() {
   const {
-    register,
-    handleSubmit,
     formState: { errors },
   } = useForm();
   let emptyProduct = {
+    cod: null,
     nombre: "",
-    activo: false,
-    password: "",
+    descripcion: "",
+    precio: 0.0,
+    id_categoria: null,
   };
 
-  const { createUser, updateUser, getUser, getUsers, users, deleteUser } =
-    useUsers();
+  const {
+    createProducto,
+    updateProducto,
+    getProducto,
+    getProductos,
+    productos,
+    deleteProducto,
+  } = useProductos();
 
-  const { createRol, updateRol, getRol, roles, getRoles, deleteRol } =
-    useRoles();
+  const { categorias, getCategorias, deleteRol } = useCategorias();
 
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
@@ -54,18 +51,13 @@ export default function UsersDemo() {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-  const params = useParams();
-  const navigate = useNavigate();
 
   const toast = useRef(null);
   const dt = useRef(null);
 
   useEffect(() => {
-    getUsers();
-  }, []);
-
-  useEffect(() => {
-    getRoles();
+    getProductos();
+    getCategorias();
   }, []);
 
   const onGlobalFilterChange = (event) => {
@@ -80,7 +72,7 @@ export default function UsersDemo() {
 
     return (
       <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-        <h4 className="m-0">Gestionar Usuario</h4>
+        <h4 className="m-0">Gestionar Producto</h4>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -116,31 +108,15 @@ export default function UsersDemo() {
     setDeleteProductsDialog(false);
   };
 
-  const [loading, setLoading] = useState(true); // Agrega un estado "loading"
-
-  const loadProducts = () => {
-    ProductService.getProducts().then((data) => {
-      setProducts(data);
-      setLoading(false);
-    });
-  };
-
-  useEffect(() => {
-    if (loading) {
-      loadProducts();
-    }
-  }, [loading]);
-
   const saveProduct = async () => {
     setSubmitted(true);
 
     if (product.nombre.trim()) {
       let _product = { ...product };
-      _product.activo = checked;
 
-      if (product.id) {
-        console.log(product.id);
-        await updateUser(product.id, _product);
+      if (product.cod) {
+        console.log(product.cod);
+        await updateProducto(product.cod, _product);
         toast.current.show({
           severity: "success",
           summary: "Successful",
@@ -148,8 +124,7 @@ export default function UsersDemo() {
           life: 3000,
         });
       } else {
-        console.log(_product);
-        await createUser(_product);
+        await createProducto(_product);
         toast.current.show({
           severity: "success",
           summary: "Successful",
@@ -159,7 +134,7 @@ export default function UsersDemo() {
       }
 
       // Después de la actualización, recarga los datos
-      const updatedData = await getUsers();
+      const updatedData = await getProductos();
       setProducts(updatedData);
 
       setProductDialog(false);
@@ -170,40 +145,42 @@ export default function UsersDemo() {
 
   // ...
 
-  const editProduct = (funcionalidad) => {
-    setProduct({ ...funcionalidad });
-    setChecked(funcionalidad.activo); // Set the checkbox state based on the functionality
+  const editProduct = (producto) => {
+    setProduct({ ...producto });
     // Ensure fecha_nacimiento is a JavaScript Date object
-    setProduct((prevProduct) => ({
-      ...prevProduct,
-      fecha_nacimiento: funcionalidad.fecha_nacimiento
-        ? new Date(funcionalidad.fecha_nacimiento)
-        : null,
-    }));
     setProductDialog(true); // Show the edit dialog
   };
   const confirmDeleteProduct = (product) => {
+    console.log(product);
     setProduct(product);
     setDeleteProductDialog(true);
   };
 
   const deleteProduct = async () => {
-    deleteFuncionalidad(product.id);
-    const updatedData = await getFuncionalidades();
-    setProducts(updatedData);
-
-    setDeleteProductDialog(false);
-    setProduct(emptyProduct);
+    await deleteProducto(product.cod);
     toast.current.show({
       severity: "success",
       summary: "Successful",
       detail: "Product Deleted",
       life: 3000,
     });
+
+    // Después de eliminar, actualiza los productos
+    const updatedData = await getProductos();
+    setProducts(updatedData);
+
+    setDeleteProductDialog(false);
+    setProduct(emptyProduct);
   };
 
   const exportCSV = () => {
     dt.current.exportCSV();
+  };
+  const onCategoryChange = (e) => {
+    let _product = { ...product };
+
+    _product["id_categoria"] = e.value;
+    setProduct(_product);
   };
 
   const confirmDeleteSelected = () => {
@@ -226,7 +203,6 @@ export default function UsersDemo() {
 
   const onInputChange = (e, name) => {
     const val = name === "activo" ? e.target.checked : e.target.value;
-    console.log(val)
     let _product = { ...product };
     _product[`${name}`] = val;
     setProduct(_product);
@@ -245,17 +221,10 @@ export default function UsersDemo() {
     return (
       <div className="flex flex-wrap gap-2">
         <Button
-          label="Nuevo Usuario"
+          label="Nuevo Producto"
           icon="pi pi-plus"
           severity="success"
           onClick={openNew}
-        />
-        <Button
-          label="Delete"
-          icon="pi pi-trash"
-          severity="danger"
-          onClick={confirmDeleteSelected}
-          disabled={!selectedProducts || !selectedProducts.length}
         />
       </div>
     );
@@ -269,16 +238,6 @@ export default function UsersDemo() {
         className="p-button-help"
         onClick={exportCSV}
       />
-    );
-  };
-
-  const statusBodyTemplate = (rowData) => {
-    const activo = rowData.activo;
-
-    return (
-      <span className={activo ? "text-green-500" : "text-red-500"}>
-        {activo ? "Activo" : "Inactivo"}
-      </span>
     );
   };
 
@@ -355,7 +314,7 @@ export default function UsersDemo() {
 
         <DataTable
           ref={dt}
-          value={users}
+          value={productos}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="id"
@@ -367,7 +326,12 @@ export default function UsersDemo() {
           filters={filters}
           header={renderHeader}
         >
-          <Column selectionMode="multiple" exportable={false}></Column>
+          <Column
+            field="cod"
+            header="Codigo"
+            sortable
+            style={{ minWidth: "16rem" }}
+          ></Column>
 
           <Column
             field="nombre"
@@ -377,45 +341,25 @@ export default function UsersDemo() {
           ></Column>
 
           <Column
-            field="apellido"
-            header="Apellido"
+            field="descripcion"
+            header="Descripcion"
             sortable
             style={{ minWidth: "16rem" }}
           ></Column>
 
           <Column
-            field="ci"
-            header="Carnet de Identidad"
+            field="categoria"
+            header="Categoria"
             sortable
             style={{ minWidth: "16rem" }}
           ></Column>
 
           <Column
-            field="telefono"
-            header="Telefono"
+            field="precio"
+            header="Precio"
             sortable
             style={{ minWidth: "16rem" }}
           ></Column>
-
-          <Column
-            field="direccion"
-            header="Direccion"
-            sortable
-            style={{ minWidth: "16rem" }}
-          ></Column>
-
-          <Column
-            field="fecha_nacimiento"
-            header="Fecha de Nacimiento"
-            sortable
-            style={{ minWidth: "16rem" }}
-          ></Column>
-
-          <Column
-            body={statusBodyTemplate}
-            header="Estado"
-            style={{ minWidth: "8rem" }}
-          />
 
           <Column
             body={actionBodyTemplate}
@@ -436,7 +380,7 @@ export default function UsersDemo() {
       >
         <div className="field">
           <label htmlFor="nombre" className="font-bold">
-            Name
+            Nombre
           </label>
 
           <InputText
@@ -455,179 +399,73 @@ export default function UsersDemo() {
         </div>
 
         <div className="field">
-          <label htmlFor="apellido" className="font-bold">
-            Apellido
+          <label htmlFor="descripcion" className="font-bold">
+            Description
           </label>
-
-          <InputText
-            id="apellido"
-            value={product.apellido}
-            onChange={(e) => onInputChange(e, "apellido")}
+          <InputTextarea
+            id="descripcion"
+            value={product.descripcion}
+            onChange={(e) => onInputChange(e, "descripcion")}
             required
-            autoFocus
+            rows={3}
+            cols={20}
             className={classNames({
-              "p-invalid": submitted && !product.apellido,
+              "p-invalid": submitted && !product.descripcion,
             })}
           />
-          {submitted && !product.apellido && (
-            <small className="p-error">Apellido is requerido.</small>
+          {submitted && !product.descripcion && (
+            <small className="p-error">La Descripcion es requerida.</small>
           )}
         </div>
 
+        {/* categoria */}
         <div className="field">
-          <label htmlFor="ci" className="font-bold">
-            CI
-          </label>
-          <InputNumber
-            inputId="ci"
-            value={product.ci}
-            onValueChange={(e) => onInputNumberChange(e, "ci")}
-            useGrouping={false}
-            required
-            autoFocus
-            className={classNames({ "p-invalid": submitted && !product.ci })}
-          />
-          {submitted && !product.ci && (
-            <small className="p-error">
-              El Carnet de Identidad es requerido.
-            </small>
+          <label className="mb-3 font-bold">Categoria</label>
+          <div className="formgrid grid">
+            {categorias.map((categoria) => (
+              <div className="field-radiobutton col-6" key={categoria.id}>
+                <RadioButton
+                  inputId={`categoria${categoria.id}`}
+                  name="categoria"
+                  value={categoria.id}
+                  onChange={onCategoryChange}
+                  checked={product.id_categoria === categoria.id}
+                  className={classNames({
+                    "p-invalid": submitted && !product.id_categoria,
+                  })}
+                />
+                <label htmlFor={`categoria${categoria.id}`}>
+                  {categoria.nombre}
+                </label>
+              </div>
+            ))}
+          </div>
+          {submitted && !product.id_categoria && (
+            <small className="p-error">Seleecione una Categoria.</small>
           )}
         </div>
 
-        <div className="field">
-          <label htmlFor="telefono" className="font-bold">
-            Telefono
-          </label>
-
-          <InputText
-            id="telefono"
-            value={product.telefono}
-            onChange={(e) => onInputChange(e, "telefono")}
-            required
-            autoFocus
-            className={classNames({
-              "p-invalid": submitted && !product.telefono,
-            })}
-          />
-        </div>
-
-        <div className="field">
-          <label htmlFor="fecha_nacimiento" className="font-bold">
-            Fecha de Nacimiento
-          </label>
-          <Calendar
-            id="fecha_nacimiento"
-            value={product.fecha_nacimiento}
-            onChange={(e) => onInputChange(e, "fecha_nacimiento")}
-            showIcon
-            dateFormat="yy/mm/dd"
-            required
-            autoFocus
-            className={classNames({
-              "p-invalid": submitted && !product.fecha_nacimiento,
-            })}
-          />
-          {submitted && !product.fecha_nacimiento && (
-            <small className="p-error">
-              La fecha de nacimiento es requerida.
-            </small>
-          )}
-        </div>
-
-        <div className="field">
-          <label htmlFor="fecha_nacimiento" className="font-bold">
-            Nombre de Usuario
-          </label>
-          <div className="p-inputgroup flex-1">
-            <span className="p-inputgroup-addon">
-              <i className="pi pi-user"></i>
-            </span>
-            <InputText
-              id="username"
-              value={product.username}
-              onChange={(e) => onInputChange(e, "username")}
-              required
-              autoFocus
-              placeholder="Username"
+        {/* precio */}
+        <div className="formgrid grid">
+          <div className="field col">
+            <label htmlFor="precio" className="font-bold">
+              Precio
+            </label>
+            <InputNumber
+              id="precio"
+              value={product.precio}
+              onValueChange={(e) => onInputNumberChange(e, "precio")}
+              mode="currency"
+              currency="USD"
+              locale="en-US"
               className={classNames({
-                "p-invalid": submitted && !product.username,
+                "p-invalid": submitted && !product.precio,
               })}
             />
-            {submitted && !product.username && (
-              <small className="p-error">Username is requerido.</small>
+            {submitted && !product.precio && (
+              <small className="p-error">El precio es requerido.</small>
             )}
           </div>
-        </div>
-
-        <div className="field">
-          <label htmlFor="password" className="font-bold">
-            Contraseña
-          </label>
-          <Password
-            id="password"
-            value={product.password}
-            onChange={(e) => onInputChange(e, "password")}
-            required
-            autoFocus
-            placeholder="min 4 caracteres"
-            toggleMask
-            className={classNames({
-              "p-invalid": submitted && !product.password,
-            })}
-          />
-          {submitted && !product.password && (
-            <small className="p-error">Password is requerido.</small>
-          )}
-        </div>
-
-        <div className="field">
-          <label htmlFor="id_rol" className="font-bold">
-            Rol
-          </label>
-          <Dropdown
-            inputId="id_rol"
-            name="id_rol"
-            value={product.id_rol} // Establece el valor seleccionado
-            options={roles.map((role) => ({
-              label: role.nombre,
-              value: role.id,
-            }))} // Mapea los roles a objetos con label y value
-            placeholder="Select a Role"
-            onChange={(e) => onInputNumberChange(e, "id_rol")} // Actualiza el campo "id_rol"
-            className={classNames({
-              "p-invalid": submitted && !product.id_rol,
-            })}
-          />
-          {submitted && !product.id_rol && (
-            <small className="p-error">Rol is required.</small>
-          )}
-        </div>
-
-        <div className="field">
-          <label htmlFor="direccion" className="font-bold">
-            Direccion
-          </label>
-
-          <InputText
-            id="direccion"
-            value={product.direccion}
-            onChange={(e) => onInputChange(e, "direccion")}
-            required
-            autoFocus
-            className={classNames({
-              "p-invalid": submitted && !product.direccion,
-            })}
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="activo">Activo:</label>
-          <input
-            type="checkbox"
-            id="activo"
-            name="activo"
-            checked={checked} // Configura el estado del checkbox
-            onChange={(e) => setChecked(e.target.checked)} // Cambia el estado cuando se marca/desmarca el checkbox
-          />
         </div>
       </Dialog>
 
@@ -647,31 +485,12 @@ export default function UsersDemo() {
           />
           {product && (
             <span>
-              Are you sure you want to delete <b>{product.name}</b>?
+              Are you sure you want to delete <b>{product.nombre}</b>?
             </span>
           )}
         </div>
       </Dialog>
 
-      <Dialog
-        visible={deleteProductsDialog}
-        style={{ width: "32rem" }}
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Confirm"
-        modal
-        footer={deleteProductsDialogFooter}
-        onHide={hideDeleteProductsDialog}
-      >
-        <div className="confirmation-content">
-          <i
-            className="pi pi-exclamation-triangle mr-3"
-            style={{ fontSize: "2rem" }}
-          />
-          {product && (
-            <span>Are you sure you want to delete the selected products?</span>
-          )}
-        </div>
-      </Dialog>
     </div>
   );
 }

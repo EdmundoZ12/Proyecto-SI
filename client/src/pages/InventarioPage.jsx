@@ -2,74 +2,62 @@ import React, { useState, useEffect, useRef } from "react";
 import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { ProductService } from "./service/Func";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
-import { FileUpload } from "primereact/fileupload";
-import { Rating } from "primereact/rating";
 import { Toolbar } from "primereact/toolbar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { RadioButton } from "primereact/radiobutton";
 import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { Tag } from "primereact/tag";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { Checkbox } from "primereact/checkbox";
-import { useRoles } from "../context/rolContext";
-import { useFuncionalidades } from "../context/funcionalidadContext";
+import { useCategorias } from "../context/categoriaContext";
+import { useProductos } from "../context/productoContext";
+import { useInventario } from "../context/inventarioContext";
 import SideBarPage from "./SideBarPage";
 import { useForm } from "react-hook-form";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function RolesDemo() {
+export default function InventariosDemo() {
   const {
-    register,
-    handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm();
   let emptyProduct = {
-    id: 0,
+    cod: null,
     nombre: "",
+    descripcion: "",
+    precio: 0.0,
+    id_categoria: null,
+    categoria:""
   };
+
+  const {
+    inventario,
+    getProductosInventario
+  } = useInventario();
+
+  const { categorias, getCategorias, deleteRol } = useCategorias();
 
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
+  const [entradaDialog, setEntradaDialog] = useState(false);
+
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [product, setProduct] = useState(emptyProduct);
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [editing, setEditing] = useState(false);
+  const [checked, setChecked] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-  const { createRol, updateRol, getRol, roles, getRoles, deleteRol } =
-    useRoles();
-  const navigate = useNavigate();
-  const params = useParams();
-
-  const [selectedFuncionalidades, setSelectedFuncionalidades] = useState([]);
-  const [checked, setChecked] = useState(false);
-  const { funcionalidades, getFuncionalidades } = useFuncionalidades();
 
   const toast = useRef(null);
   const dt = useRef(null);
 
   useEffect(() => {
-    getRoles();
+    getProductosInventario()
   }, []);
-
-  const handleFuncionalidadChange = (id) => {
-    if (selectedFuncionalidades.includes(id)) {
-      setSelectedFuncionalidades(
-        selectedFuncionalidades.filter((funcId) => funcId !== id)
-      );
-    } else {
-      setSelectedFuncionalidades([...selectedFuncionalidades, id]);
-    }
-  };
 
   const onGlobalFilterChange = (event) => {
     const value = event.target.value;
@@ -83,7 +71,7 @@ export default function RolesDemo() {
 
     return (
       <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-        <h4 className="m-0">Gestionar Rol</h4>
+        <h4 className="m-0">Gestionar Producto</h4>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -119,32 +107,15 @@ export default function RolesDemo() {
     setDeleteProductsDialog(false);
   };
 
-  const [loading, setLoading] = useState(true); // Agrega un estado "loading"
-
-  const loadProducts = () => {
-    ProductService.getProducts().then((data) => {
-      setProducts(data);
-      setLoading(false);
-    });
-  };
-
-  useEffect(() => {
-    if (loading) {
-      loadProducts();
-    }
-  }, [loading]);
-
   const saveProduct = async () => {
     setSubmitted(true);
 
     if (product.nombre.trim()) {
-      const formData = {
-        ...product,
-        permisos: selectedFuncionalidades,
-      };
+      let _product = { ...product };
 
-      if (product.id) {
-        await updateRol(product.id, formData);
+      if (product.cod) {
+        console.log(product.cod);
+        await updateProducto(product.cod, _product);
         toast.current.show({
           severity: "success",
           summary: "Successful",
@@ -152,7 +123,7 @@ export default function RolesDemo() {
           life: 3000,
         });
       } else {
-        await createRol(formData);
+        await createProducto(_product);
         toast.current.show({
           severity: "success",
           summary: "Successful",
@@ -162,68 +133,80 @@ export default function RolesDemo() {
       }
 
       // Después de la actualización, recarga los datos
-      const updatedData = await getRoles();
+      const updatedData = await getProductos();
       setProducts(updatedData);
 
       setProductDialog(false);
-      setSelectedFuncionalidades([])
       setProduct(emptyProduct);
       setSubmitted(false);
     }
   };
-  // ...
 
-  const editProduct = (rol) => {
-    setProduct(rol);
-    setChecked(rol.activo); // Establece el estado del checkbox según el rol
-    setSelectedFuncionalidades(rol.permisos); // Establece las funcionalidades seleccionadas según el rol
-    console.log(rol.permisos);
-    setProductDialog(true); // Muestra el diálogo de edición
+  // ...
+    const saveNota = () => {
+    setSubmitted(true);
+
+    if (entrada.cod > 0) {
+      // ... (otros códigos existentes)
+
+      const datos = {
+        cod: entrada.cod,
+        cantidad: entrada.cantidad,
+        id: entrada.id,
+        precio: entrada.precio,
+        productos: productosEntrada, // Agrega los productos al objeto datos
+      };
+
+      console.log("Datos de la nota de entrada:", datos);
+
+      toast.current.show({
+        severity: "success",
+        summary: "Successful",
+        detail: "Nota creada",
+        life: 3000,
+      });
+      setSearchQuery(null);
+      setEntradaDialog(false);
+      setEntrada(emptyEntrada);
+      setProductosEntrada([]); // Limpia los productos después de guardar la nota
+    }
+  };
+  const editProduct = (producto) => {
+    setProduct({ ...producto });
+    // Ensure fecha_nacimiento is a JavaScript Date object
+    setProductDialog(true); // Show the edit dialog
   };
   const confirmDeleteProduct = (product) => {
+    console.log(product);
     setProduct(product);
     setDeleteProductDialog(true);
   };
 
   const deleteProduct = async () => {
-    deleteRol(product.id);
-    const updatedData = await getRoles();
-    setProducts(updatedData);
-
-    setDeleteProductDialog(false);
-    setProduct(emptyProduct);
+    await deleteProducto(product.cod);
     toast.current.show({
       severity: "success",
       summary: "Successful",
       detail: "Product Deleted",
       life: 3000,
     });
+
+    // Después de eliminar, actualiza los productos
+    const updatedData = await getProductos();
+    setProducts(updatedData);
+
+    setDeleteProductDialog(false);
+    setProduct(emptyProduct);
   };
-
-  useEffect(() => {
-    if (editing) {
-      const loadTask = async () => {
-        if (product.id) {
-          const rolData = await getRol(product.id);
-          setValue("nombre", rolData.rol[0].nombre);
-  
-          const permisosIDs = rolData.permisos.map(
-            (permiso) => permiso.id_funcionalidad
-          );
-          setSelectedFuncionalidades(permisosIDs);
-        }
-      };
-      loadTask();
-    }
-  }, [product.id, getRol, setValue, editing]);
-  
-
-  useEffect(() => {
-    getFuncionalidades();
-  },[]);
 
   const exportCSV = () => {
     dt.current.exportCSV();
+  };
+  const onCategoryChange = (e) => {
+    let _product = { ...product };
+
+    _product["id_categoria"] = e.value;
+    setProduct(_product);
   };
 
   const confirmDeleteSelected = () => {
@@ -251,21 +234,23 @@ export default function RolesDemo() {
     setProduct(_product);
   };
 
+  const onInputNumberChange = (e, name) => {
+    const val = e.value || 0;
+    let _product = { ...product };
+
+    _product[`${name}`] = val;
+
+    setProduct(_product);
+  };
+
   const leftToolbarTemplate = () => {
     return (
       <div className="flex flex-wrap gap-2">
         <Button
-          label="Nuevo Rol"
+          label="Nuevo Producto"
           icon="pi pi-plus"
           severity="success"
           onClick={openNew}
-        />
-        <Button
-          label="Delete"
-          icon="pi pi-trash"
-          severity="danger"
-          onClick={confirmDeleteSelected}
-          disabled={!selectedProducts || !selectedProducts.length}
         />
       </div>
     );
@@ -286,34 +271,14 @@ export default function RolesDemo() {
     return (
       <React.Fragment>
         <Button
-          icon="pi pi-pencil"
+          icon="pi pi-eye"
           rounded
           outlined
           className="mr-2"
-          onClick={() => {
-            setEditing(true); // Activa el modo de edición
-            editProduct(rowData); // Establece el rol a editar
-          }}
+          onClick={() => editProduct(rowData)}
         />
-
-        <Button
-          icon="pi pi-trash"
-          rounded
-          outlined
-          severity="danger"
-          onClick={() => confirmDeleteProduct(rowData)}
-        />
+        {/* <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => confirmDeleteProduct(rowData)} /> */}
       </React.Fragment>
-    );
-  };
-
-  const statusBodyTemplate = (rowData) => {
-    const activo = rowData.activo;
-
-    return (
-      <span className={activo ? "text-green-500" : "text-red-500"}>
-        {activo ? "Activo" : "Inactivo"}
-      </span>
     );
   };
 
@@ -332,7 +297,7 @@ export default function RolesDemo() {
         onClick={hideDeleteProductDialog}
       />
       <Button
-        label="Yes"
+        label="Si"
         icon="pi pi-check"
         severity="danger"
         onClick={deleteProduct}
@@ -348,7 +313,7 @@ export default function RolesDemo() {
         onClick={hideDeleteProductsDialog}
       />
       <Button
-        label="Yes"
+        label="Si"
         icon="pi pi-check"
         severity="danger"
         onClick={deleteSelectedProducts}
@@ -369,10 +334,10 @@ export default function RolesDemo() {
 
         <DataTable
           ref={dt}
-          value={roles}
+          value={inventario}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
-          dataKey="id"
+          dataKey="cod"
           paginator
           rows={10}
           rowsPerPageOptions={[5, 10, 25]}
@@ -381,7 +346,12 @@ export default function RolesDemo() {
           filters={filters}
           header={renderHeader}
         >
-          <Column selectionMode="multiple" exportable={false}></Column>
+          <Column
+            field="cod"
+            header="Codigo"
+            sortable
+            style={{ minWidth: "16rem" }}
+          ></Column>
 
           <Column
             field="nombre"
@@ -389,11 +359,21 @@ export default function RolesDemo() {
             sortable
             style={{ minWidth: "16rem" }}
           ></Column>
+
           <Column
-            body={statusBodyTemplate}
-            header="Estado"
-            style={{ minWidth: "8rem" }}
-          />
+            field="cantidad"
+            header="Cantidad"
+            sortable
+            style={{ minWidth: "16rem" }}
+          ></Column>
+
+          <Column
+            field="precio"
+            header="Precio"
+            sortable
+            style={{ minWidth: "16rem" }}
+          ></Column>
+
           <Column
             body={actionBodyTemplate}
             exportable={false}
@@ -403,53 +383,93 @@ export default function RolesDemo() {
       </div>
       <Dialog
         visible={productDialog}
-        style={{ width: "32rem" }}
+        style={{ width: "40rem" }}
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Product Details"
+        header="Detalle de inventario"
         modal
         className="p-fluid"
         footer={productDialogFooter}
         onHide={hideDialog}
       >
+        {/* nombre */}
+
         <div className="field">
           <label htmlFor="nombre" className="font-bold">
-            Name
+            Nombre
           </label>
-
           <InputText
+            disabled
             id="nombre"
             value={product.nombre}
             onChange={(e) => onInputChange(e, "nombre")}
             required
             autoFocus
-            className={classNames({ "p-invalid": submitted && !product.name })}
+            className={classNames({
+              "p-invalid": submitted && !product.nombre,
+            })}
+            readOnly
           />
-          {submitted && !product.nombre && (
-            <small className="p-error">Name is required.</small>
+          {submitted && !product.name && (
+            <small className="p-error">Nombre es requerido.</small>
           )}
         </div>
 
-        
+        {/* categoria */}
+
         <div className="field">
-          <label htmlFor="funcionalidades">Funcionalidades:</label>
-          {funcionalidades.map((funcionalidad) => (
-            <div key={funcionalidad.id}>
-              <input
-                type="checkbox"
-                id={`funcionalidad-${funcionalidad.id}`}
-                name={`funcionalidad-${funcionalidad.id}`}
-                value={funcionalidad.id}
-                checked={
-                  selectedFuncionalidades &&
-                  selectedFuncionalidades.includes(funcionalidad.id)
-                }
-                onChange={() => handleFuncionalidadChange(funcionalidad.id)}
-              />
-              <label htmlFor={`funcionalidad-${funcionalidad.id}`}>
-                {funcionalidad.nombre}
-              </label>
-            </div>
-          ))}
+          <label htmlFor="categoria" className="font-bold">
+            Categoria
+          </label>
+          <InputText
+            disabled
+            readOnly
+            id="categoria"
+            value={product.categoria}
+            onChange={(e) => onInputChange(e, "categoria")}
+            required
+            autoFocus
+            className={classNames({
+              "p-invalid": submitted && !product.categoria,
+            })}
+          />
+          {submitted && !product.categoria && (
+            <small className="p-error">Nombre es requerido.</small>
+          )}
+        </div>
+
+        {/* cantidad */}
+        <div className="formgrid grid">
+          <div className="field col">
+            <label htmlFor="cantidad" className="font-bold">
+              Cantidad
+            </label>
+            <InputNumber
+              disabled
+              readOnly
+              id="cantidad"
+              value={product.cantidad}
+              onValueChange={(e) => onInputNumberChange(e, "cantidad")}
+            />
+          </div>
+        </div>
+
+        {/* precio */}
+        <div className="formgrid grid">
+          <div className="field col">
+            <label htmlFor="precio" className="font-bold">
+              Precio
+            </label>
+            <InputNumber
+              readOnly
+              disabled
+              id="precio"
+              value={product.precio}
+              onValueChange={(e) => onInputNumberChange(e, "precio")}
+              mode="currency"
+              currency="USD"
+              locale="en-US"
+            />
+          </div>
         </div>
       </Dialog>
 
@@ -469,28 +489,8 @@ export default function RolesDemo() {
           />
           {product && (
             <span>
-              Are you sure you want to delete <b>{product.name}</b>?
+              Are you sure you want to delete <b>{product.nombre}</b>?
             </span>
-          )}
-        </div>
-      </Dialog>
-
-      <Dialog
-        visible={deleteProductsDialog}
-        style={{ width: "32rem" }}
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Confirm"
-        modal
-        footer={deleteProductsDialogFooter}
-        onHide={hideDeleteProductsDialog}
-      >
-        <div className="confirmation-content">
-          <i
-            className="pi pi-exclamation-triangle mr-3"
-            style={{ fontSize: "2rem" }}
-          />
-          {product && (
-            <span>Are you sure you want to delete the selected products?</span>
           )}
         </div>
       </Dialog>

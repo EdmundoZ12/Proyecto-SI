@@ -6,17 +6,17 @@ const router = Router();
 
 
 
-router.get("/index", getProductos);
+router.get("/productos", getProductos);
 
-router.get("/get/:id", getProducto);
+router.get("/productos/:id", getProducto);
 
-router.post("/create", createProducto);
+router.post("/productos", createProducto);
 
-router.put("/update/:id", updateProducto);
+router.put("/productos/:id", updateProducto);
 
-router.delete("/delete/:id", deleteProducto);
+router.delete("/productos/:id", deleteProducto);
 
-router.get("/activate/:id", activateProducto);
+router.get("/productos/:id", activateProducto);
 
 
 

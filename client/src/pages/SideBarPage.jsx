@@ -46,34 +46,47 @@ export default function SideBarPage() {
       icon: "pi pi-fw pi-cart-plus",
       items: [
         {
-          label: <Link to="/producto">producto</Link>,
+          label: <Link to="/productos">Productos</Link>,
           icon: "pi pi-fw pi-plus",
         },
         {
-          label: <Link to="/categoria">Categoria</Link>,
+          label: <Link to="/categorias">Categorias</Link>,
           icon: "pi pi-fw pi-plus",
         },
         {
-          label: <Link to="/proveedor">Proveedor</Link>,
+          label: <Link to="/proveedores">Proveedores</Link>,
           icon: "pi pi-fw pi-plus",
         },
         {
-          label: <Link to="/inventario">Invantario</Link>,
+          label: <Link to="/inventario">Inventario</Link>,
+          icon: "pi pi-fw pi-plus",
+        },
+        {
+          label: <Link to="/inventarios">Inventario2</Link>,
+          icon: "pi pi-fw pi-plus",
+        },
+        ,
+        {
+          label: <Link to="/nota-de-entrada">Nota de Entrada</Link>,
           icon: "pi pi-fw pi-plus",
         },
       ],
     },
     {
-      label: "Edit",
+      label: "Membresias",
       icon: "pi pi-fw pi-pencil",
       items: [
         {
-          label: "Left",
-          icon: "pi pi-fw pi-align-left",
+          label: <Link to="/disciplinas">Disciplinas</Link>,
+          icon: "pi pi-fw pi-plus",
         },
         {
-          label: "Right",
-          icon: "pi pi-fw pi-align-right",
+          label: <Link to="/horario">Horarios</Link>,
+          icon: "pi pi-fw pi-plus",
+        },
+        {
+          label: <Link to="/entrenador">Entrenadores</Link>,
+          icon: "pi pi-fw pi-plus",
         },
         {
           label: "Center",

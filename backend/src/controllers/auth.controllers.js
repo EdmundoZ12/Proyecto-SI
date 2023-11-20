@@ -24,8 +24,8 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Incorrect password" });
     }
     const token = await createAccessToken({ id: user.id_persona });
-    res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "None" });
 
+    res.cookie("token", token, { sameSite: "None", secure: true });
 
     res.json({ id: user.id_persona, username: user.username });
     // La tarea ya existe, puedes devolver un mensaje personalizado si lo deseas
@@ -60,7 +60,7 @@ const profile = async (req, res) => {
 
 const verifyToken = async (req, res) => {
   const { token } = req.cookies;
-  console.log(token);
+  console.log(token)
   
   if (!token) {
     return res.status(401).json({ message: "No Autorizado" });
@@ -68,7 +68,7 @@ const verifyToken = async (req, res) => {
 
   try {
     const decodedToken = jwt.verify(token, TOKEN_SECRET);
-    console.log(decodedToken.id);
+    console.log(decodedToken.id)
     const usuario = await pool.query("SELECT * FROM Usuario WHERE Id_Persona = $1", [
       decodedToken.id
     ]);
@@ -76,14 +76,12 @@ const verifyToken = async (req, res) => {
     if (usuario.rows.length === 0) {
       return res.status(400).json({ message: "Usuario no encontrado." });
     }
+    console.log(usuario.id)
 
     const user = {
-      id: usuario.id,
-      username: usuario.username
+      id: usuario.rows[0].id_persona, // Assuming id is a property of the user
+      username: usuario.rows[0].username // Assuming username is a property of the user
     };
-
-    const newToken = await createAccessToken({ id: user.id });
-    res.cookie("token", newToken, { httpOnly: true, secure: true, sameSite: "None" });
 
     res.json(user);
   } catch (error) {

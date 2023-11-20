@@ -13,19 +13,19 @@ const getProveedores = async(req, res) => {
     }
 };
 
-const getProveedor = async(req, res) => {
-    const { id } = req.params;
-
+const getProveedor = async (req, res, next) => {
     try {
-
-        const rol = await pool.query(`select * from ${tabla} where id=$1`, [id]);
-
-        res.json(rol.rows);
+      const id = req.params.id;
+      const Funcionalidad = await pool.query("SELECT * FROM Proveedor WHERE id=$1", [id]);
+      if (Funcionalidad.rows.length === 0) {
+        return res.status(404).json({ mensaje: "Proveedor no encontrado." });
+      }
+  
+      res.json(Funcionalidad.rows[0]);
     } catch (error) {
-        res.json(error);
+      next(error);
     }
-};
-
+  };
 
 const createProveedor = async(req, res) => {
     const { empresa, telefono } = req.body;
