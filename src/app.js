@@ -16,6 +16,8 @@ const categoriaRoute = require('./routes/categoria.routes.js');
 
 
 const clienteRoute = require('./routes/cliente.routes');
+const MembresiaRoute = require('./routes/membresia.routes');
+
 
 
 
@@ -43,6 +45,8 @@ app.use('/categoria', categoriaRoute);
 
 
 app.use('/cliente', clienteRoute);
+app.use('/membresia', MembresiaRoute);
+
 
 
 
