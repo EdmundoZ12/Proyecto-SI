@@ -15,6 +15,7 @@ import { useCategorias } from "../context/categoriaContext";
 import { useProductos } from "../context/productoContext";
 import { useInventario } from "../context/inventarioContext";
 import { useNota_Entrada } from "../context/nota-de-entradaContext";
+import { useDisciplinas } from "../context/disciplinaContext";
 import SideBarPage from "./SideBarPage";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
@@ -22,7 +23,7 @@ import { Dropdown } from "primereact/dropdown";
 import { useProveedores } from "../context/proveedorContext";
 import { useAuth } from "../context/authContext";
 
-export default function Nota_EntradasDemo() {
+export default function DisciplinasDemo() {
   const {
     formState: { errors },
   } = useForm();
@@ -37,9 +38,16 @@ export default function Nota_EntradasDemo() {
     cod_producto: null,
     categoria: "",
     monto_producto: null,
+    activo:false
   };
 
-  const { inventario, getProductosInventario } = useInventario();
+  const {
+    disciplinas,
+    getDisciplinas,
+    getDisciplina,
+    createDisciplina,
+    updateDisciplina,
+  } = useDisciplinas();
 
   const { nota_Entrada, createNota_Entrada, getNotas_Entrada } =
     useNota_Entrada();
@@ -62,11 +70,10 @@ export default function Nota_EntradasDemo() {
   } = useProveedores();
   let emptyEntrada = {
     cod: null,
-    empresa: "",
-    cantidad: 0,
-    precio: 0.0,
-    cod_producto: null,
     nombre: "",
+    descripcion:"",
+    precio: 0.0,
+    activo: false,
   };
 
   const [products, setProducts] = useState(null);
@@ -91,9 +98,7 @@ export default function Nota_EntradasDemo() {
   const dt = useRef(null);
 
   useEffect(() => {
-    getNotas_Entrada();
-    getProveedores();
-    getProductos();
+    getDisciplinas();
     user.id;
   }, []);
 
@@ -131,7 +136,7 @@ export default function Nota_EntradasDemo() {
 
     return (
       <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-        <h4 className="m-0">Gestionar Producto</h4>
+        <h4 className="m-0">Gestionar Disciplina</h4>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -148,6 +153,7 @@ export default function Nota_EntradasDemo() {
   const openNew = () => {
     setProduct(emptyProduct);
     setEntrada(emptyEntrada);
+    setChecked(false)
     setProductosEntrada([]);
     setSubmitted(false);
     setEntradaDialog(true);
@@ -170,77 +176,77 @@ export default function Nota_EntradasDemo() {
   const saveProduct = async () => {
     setSubmitted(true);
 
-    const datos = {
-      id_usuario: user.id,
-      id_proveedor: product.id_proveedor,
-      productos: productosEntrada.map((producto) => ({
-        cod_producto: producto.cod,
-        cantidad: producto.cantidad,
-        precio: producto.precio,
-      })),
-    };
-    await createNota_Entrada(datos);
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "Product Created",
-      life: 3000,
-    });
+    if (entrada.nombre.trim()) {
+      let _product = { ...entrada };
+      _product.activo = checked;
+        console.log(_product);
+        await createDisciplina(_product);
+        toast.current.show({
+          severity: "success",
+          summary: "Successful",
+          detail: "Product Created",
+          life: 3000,
+        });
+      //}
 
-    // Después de la actualización, recarga los datos
-    const updatedData = await getNotas_Entrada();
-    setProducts(updatedData);
-
-    setProductDialog(false);
-    setProduct(emptyProduct);
-    setSubmitted(false);
-    setSearchQuery(null);
-    setEntradaDialog(false);
-    setEntrada(emptyEntrada);
-    setProductosEntrada([]);
-  };
-  const saveNota = () => {
-    //setSubmitted(true);
-    console.log(user);
-    const datos = {
-      id_usuario: user.id,
-      id_proveedor: product.id_proveedor,
-      productos: productosEntrada.map((producto) => ({
-        cod_producto: producto.cod,
-        cantidad: producto.cantidad,
-        precio: producto.precio,
-      })),
-    };
-
-    console.log("Datos de la nota de entrada:", datos);
-
-    if (entrada.cod > 0) {
-      toast.current.show({
-        severity: "success",
-        summary: "Successful",
-        detail: "Nota creada",
-        life: 3000,
-      });
-      setSearchQuery(null);
+      // Después de la actualización, recarga los datos
+      const updatedData = await getDisciplinas();
+      setProducts(updatedData);
+      setProductDialog(false);
+      setProduct(emptyProduct);
+      setSubmitted(false);
       setEntradaDialog(false);
       setEntrada(emptyEntrada);
-      setProductosEntrada([]); // Limpia los productos después de guardar la nota
+      setProductosEntrada([]);
     }
   };
-  // ...
+
+
+  const updateProduct = async () => {
+    setSubmitted(true);
+    if (product.nombre.trim()) {
+      let _product = { ...product };
+      _product.activo = checked;
+
+      if (product.cod) {
+        console.log(product.cod);
+        await updateDisciplina(product.cod, _product);
+        toast.current.show({
+          severity: "success",
+          summary: "Successful",
+          detail: "Product Updated",
+          life: 3000,
+        });
+      }
+
+      // Después de la actualización, recarga los datos
+      const updatedData = await getDisciplinas();
+      setProducts(updatedData);
+      setProductDialog(false);
+      setProduct(emptyProduct);
+      setSubmitted(false);
+      setEntradaDialog(false);
+      setEntrada(emptyEntrada);
+      setProductosEntrada([]);
+    }
+  };
 
   const editProduct = (producto) => {
     setProduct({ ...producto });
-
-    const productosAsociados = producto.productos || [];
+    setChecked(producto.activo);
+    const productosAsociados = producto.horarios || [];
     setProductosAsociados(productosAsociados);
 
     setProductDialog(true); // Show the edit dialog
   };
-  const confirmDeleteProduct = (product) => {
-    console.log(product);
-    setProduct(product);
-    setDeleteProductDialog(true);
+  const statusBodyTemplate = (rowData) => {
+    const activo = rowData.activo;
+
+    return (
+      <span className={activo ? "text-green-500" : "text-red-500"}>
+        {activo ? "Activo" : "Inactivo"}
+      </span>
+    );
   };
   const hideEntradaDialog = () => {
     setSubmitted(false);
@@ -275,10 +281,6 @@ export default function Nota_EntradasDemo() {
     setProduct(_product);
   };
 
-  const confirmDeleteSelected = () => {
-    setDeleteProductsDialog(true);
-  };
-
   const deleteSelectedProducts = () => {
     let _products = products.filter((val) => !selectedProducts.includes(val));
 
@@ -307,23 +309,17 @@ export default function Nota_EntradasDemo() {
 
     setEntrada(_product);
   };
-  const onInputNumberChange2 = async (e, name) => {
-    const val = e.value || 0;
+  const onInputChangeEntrada = (e, name) => {
+    const val = name === "activo" ? e.target.checked : e.target.value;
     let _product = { ...entrada };
-    console.log(e.value);
-    const nombrepro = await getProducto(e.value);
-
-    console.log(nombrepro.nombre);
     _product[`${name}`] = val;
-    _product["nombre"] = nombrepro.nombre;
-
     setEntrada(_product);
   };
   const leftToolbarTemplate = () => {
     return (
       <div className="flex flex-wrap gap-2">
         <Button
-          label="Nueva Nota de Entrada"
+          label="Nueva Disciplina"
           icon="pi pi-plus"
           severity="success"
           onClick={openNew}
@@ -364,6 +360,14 @@ export default function Nota_EntradasDemo() {
       <Button label="Save" icon="pi pi-check" onClick={saveProduct} />
     </React.Fragment>
   );
+
+  const productActuaFooter = (
+    <React.Fragment>
+      <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
+      <Button label="Save2" icon="pi pi-check" onClick={updateProduct} />
+    </React.Fragment>
+  );
+
 
   const EntradaDialogFooter = (
     <React.Fragment>
@@ -422,7 +426,7 @@ export default function Nota_EntradasDemo() {
 
         <DataTable
           ref={dt}
-          value={nota_Entrada}
+          value={disciplinas}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="cod"
@@ -435,22 +439,28 @@ export default function Nota_EntradasDemo() {
           header={renderHeader}
         >
           <Column
+            field="cod"
+            header="Codigo de Disciplina"
+            sortable
+            style={{ minWidth: "16rem" }}
+          ></Column>
+          <Column
             field="nombre"
-            header="Nombre Usuario"
+            header="Nombre"
             sortable
             style={{ minWidth: "16rem" }}
           ></Column>
 
           <Column
-            field="empresa"
-            header="Nombre de Empresa"
+            field="descripcion"
+            header="Descripcion"
             sortable
             style={{ minWidth: "16rem" }}
           ></Column>
 
           <Column
-            field="monto"
-            header="Monto Total"
+            field="precio"
+            header="Precio"
             sortable
             style={{ minWidth: "16rem" }}
           ></Column>
@@ -464,14 +474,116 @@ export default function Nota_EntradasDemo() {
       </div>
       <Dialog
         visible={productDialog}
-        style={{ width: "40rem" }}
+        style={{ width: "60rem" }}
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Detalle de Nota de Entrada"
+        header="Detalle de Horarios"
         modal
         className="p-fluid"
-        footer={productDialogFooter}
+        footer={productActuaFooter}
         onHide={hideDialog}
       >
+        {/* nombre Disciplina*/}
+        <div
+          className="formgrid grid"
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
+          <div className="field">
+            <label htmlFor="cod" className="font-bold">
+              Codigo de la Disciplina
+            </label>
+
+            <InputText
+              id="cod"
+              value={product.cod}
+              onChange={(e) => onInputChange(e, "cod")}
+              required
+              autoFocus
+              className={classNames({
+                "p-invalid": submitted && !product.cod,
+              })}
+            />
+            {submitted && !product.cod && (
+              <small className="p-error">
+                El codigo de disciplina es Requerido.
+              </small>
+            )}
+          </div>
+
+          <div className="field">
+            <label htmlFor="nombre" className="font-bold">
+              Nombre
+            </label>
+            <InputText
+              id="nombre"
+              value={product.nombre}
+              onChange={(e) => onInputChange(e, "nombre")}
+              required
+              autoFocus
+              className={classNames({
+                "p-invalid": submitted && !product.nombre,
+              })}
+            />
+            {submitted && !product.nombre && (
+              <small className="p-error">Nombre es requerido.</small>
+            )}
+          </div>
+        </div>
+
+        <div className="field">
+          <label htmlFor="descripcion" className="font-bold">
+            Descripcion
+          </label>
+          <InputTextarea
+            id="descripcion"
+            value={product.descripcion}
+            onChange={(e) => onInputChange(e, "descripcion")}
+            required
+            rows={3}
+            cols={20}
+            className={classNames({
+              "p-invalid": submitted && !product.descripcion,
+            })}
+          />
+          {submitted && !product.descripcion && (
+            <small className="p-error">La Descripcion es requerida.</small>
+          )}
+        </div>
+
+        <div
+          className="formgrid grid"
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
+          {/* Entrada de Precio */}
+          <div className="field col" style={{ marginRight: "10px" }}>
+            <label htmlFor="precio" className="font-bold">
+              Precio
+            </label>
+            <InputNumber
+              id="precio"
+              value={product.precio}
+              onValueChange={(e) => onInputNumberChange(e, "precio")}
+              mode="currency"
+              currency="USD"
+              locale="en-US"
+            />
+          </div>
+
+          <div className="field col" style={{ marginRight: "10px" }}>
+            <label htmlFor="activo" className="font-bold">
+              Activo:
+            </label>
+            <div className="field col" style={{ marginTop: "10px" }}>
+              <input
+                type="checkbox"
+                id="activo"
+                name="activo"
+                checked={checked} // Configura el estado del checkbox
+                className="field col"
+                onChange={(e) => setChecked(e.target.checked)} // Cambia el estado cuando se marca/desmarca el checkbox
+              />
+            </div>
+          </div>
+        </div>
         {/* Tabla de Productos Asociados */}
         <div className="card">
           <DataTable
@@ -481,32 +593,28 @@ export default function Nota_EntradasDemo() {
           >
             {/* Define las columnas según la estructura de los productos */}
             <Column
-              field="cod_producto"
+              field="id_horario"
               header="COD"
               sortable
               style={{ minWidth: "16rem" }}
             ></Column>
+            <Column header="Dia" body={(rowData) => rowData.dia}></Column>
             <Column
-              header="Nombre Producto"
-              body={(rowData) => rowData.nombre}
+              header="Hora de Inicio"
+              body={(rowData) => rowData.hora_inicio}
             ></Column>
             <Column
-              header="Cantidad"
-              body={(rowData) => rowData.cantidad}
-            ></Column>
-            <Column header="Precio" body={(rowData) => rowData.precio}></Column>
-            <Column
-              header="Monto"
-              body={(rowData) => rowData.monto_producto}
+              header="Hora de Finalizacion"
+              body={(rowData) => rowData.hora_fin}
             ></Column>
           </DataTable>
         </div>
       </Dialog>
 
-      {/*Crear Nueva nota de entrada */}
+      {/*Crear Nueva Disciplina */}
       <Dialog
         visible={entradaDialog}
-        style={{ width: "70rem", margin: "0 auto" }}
+        style={{ width: "50rem", margin: "0 auto" }}
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
         header="Detalle nota entrada"
         modal
@@ -514,65 +622,77 @@ export default function Nota_EntradasDemo() {
         footer={EntradaDialogFooter}
         onHide={hideEntradaDialog}
       >
-        {/* nombre Producto*/}
-        <div className="field">
-          <label htmlFor="cod_producto" className="font-bold">
-            Producto
-          </label>
-          <Dropdown
-            inputId="cod_producto"
-            name="cod_producto"
-            value={entrada.cod_producto} // Establece el valor seleccionado
-            options={productos.map((producto) => ({
-              label: producto.nombre,
-              value: producto.cod,
-            }))} // Mapea los roles a objetos con label y value
-            placeholder="Selecciona un Producto"
-            onChange={(e) => onInputNumberChange2(e, "cod_producto")} // Actualiza el campo "id_rol"
-          />
+        {/* nombre Disciplina*/}
+        <div
+          className="formgrid grid"
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
+          <div className="field">
+            <label htmlFor="cod" className="font-bold">
+              Codigo de la Disciplina
+            </label>
+
+            <InputText
+              id="cod"
+              value={entrada.cod}
+              onChange={(e) => onInputChangeEntrada(e, "cod")}
+              required
+              autoFocus
+              className={classNames({
+                "p-invalid": submitted && !entrada.cod,
+              })}
+            />
+            {submitted && !entrada.cod && (
+              <small className="p-error">
+                El codigo de disciplina es Requerido.
+              </small>
+            )}
+          </div>
+
+          <div className="field">
+            <label htmlFor="nombre" className="font-bold">
+              Nombre
+            </label>
+            <InputText
+              id="nombre"
+              value={entrada.nombre}
+              onChange={(e) => onInputChangeEntrada(e, "nombre")}
+              required
+              autoFocus
+              className={classNames({
+                "p-invalid": submitted && !entrada.nombre,
+              })}
+            />
+            {submitted && !entrada.nombre && (
+              <small className="p-error">Nombre es requerido.</small>
+            )}
+          </div>
         </div>
 
-        {/* Proveedores */}
         <div className="field">
-          <label className="mb-3 font-bold">Proveedores</label>
-          <div className="formgrid grid">
-            {proveedores.map((proveedor) => (
-              <div className="field-radiobutton col-6" key={proveedor.id}>
-                <RadioButton
-                  inputId={`proveedor${proveedor.id}`}
-                  name="id_proveedor"
-                  value={proveedor.id}
-                  onChange={onCategoryChange}
-                  checked={product.id_proveedor === proveedor.id}
-                />
-                <label htmlFor={`proveedor${proveedor.id}`}>
-                  {proveedor.empresa}
-                </label>
-              </div>
-            ))}
-          </div>
+          <label htmlFor="descripcion" className="font-bold">
+            Descripcion
+          </label>
+          <InputTextarea
+            id="descripcion"
+            value={entrada.descripcion}
+            onChange={(e) => onInputChangeEntrada(e, "descripcion")}
+            required
+            rows={3}
+            cols={20}
+            className={classNames({
+              "p-invalid": submitted && !entrada.descripcion,
+            })}
+          />
+          {submitted && !entrada.descripcion && (
+            <small className="p-error">La Descripcion es requerida.</small>
+          )}
         </div>
 
         <div
           className="formgrid grid"
           style={{ display: "flex", justifyContent: "space-between" }}
         >
-          {/* Entrada de Cantidad */}
-          <div className="field col" style={{ marginRight: "10px" }}>
-            <label htmlFor="cantidad" className="font-bold">
-              Cantidad
-            </label>
-            <InputNumber
-              inputId="cantidad"
-              value={entrada.cantidad}
-              onValueChange={(e) => onInputNumberChange(e, "cantidad")}
-              mode="decimal"
-              showButtons
-              min={0}
-              // max={100}
-            />
-          </div>
-
           {/* Entrada de Precio */}
           <div className="field col" style={{ marginRight: "10px" }}>
             <label htmlFor="precio" className="font-bold">
@@ -588,28 +708,21 @@ export default function Nota_EntradasDemo() {
             />
           </div>
 
-          {/* Botón */}
-          <div className="field col" style={{ marginTop: "24px" }}>
-            <Button
-              icon="pi pi-plus"
-              aria-label="Filter"
-              onClick={agregarProducto}
-            />
+          <div className="field col" style={{ marginRight: "10px" }}>
+            <label htmlFor="activo" className="font-bold">
+              Activo:
+            </label>
+            <div className="field col" style={{ marginTop: "10px" }}>
+              <input
+                type="checkbox"
+                id="activo"
+                name="activo"
+                checked={checked} // Configura el estado del checkbox
+                className="field col"
+                onChange={(e) => setChecked(e.target.checked)} // Cambia el estado cuando se marca/desmarca el checkbox
+              />
+            </div>
           </div>
-        </div>
-
-        {/* Tabla de Productos */}
-        <div className="card">
-          <DataTable
-            value={productosEntrada}
-            showGridlines
-            tableStyle={{ minWidth: "50rem" }}
-          >
-            <Column field="cod" header="Cod"></Column>
-            <Column field="nombre" header="Nombre del Producto"></Column>
-            <Column field="cantidad" header="Cantidad"></Column>
-            <Column field="precio" header="Precio"></Column>
-          </DataTable>
         </div>
       </Dialog>
     </div>

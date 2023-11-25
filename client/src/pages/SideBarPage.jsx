@@ -15,7 +15,7 @@ export default function SideBarPage() {
           label: <Link to="/users">New User</Link>,
           icon: "pi pi-fw pi-user-plus",
           style: {
-            backgroundColor: 'var(--bluegray-400)', // Estilo de fondo
+            backgroundColor: "var(--bluegray-400)", // Estilo de fondo
             color: "white", // Color del texto
             fontSize: "16px", // Tamaño de fuente
           },
@@ -24,7 +24,7 @@ export default function SideBarPage() {
           label: <Link to="/funcionalidades">New Functionality</Link>,
           icon: "pi pi-fw pi-user-plus",
           style: {
-            backgroundColor: 'var(--bluegray-400)', // Estilo de fondo
+            backgroundColor: "var(--bluegray-400)", // Estilo de fondo
             color: "white", // Color del texto
             fontSize: "16px", // Tamaño de fuente
           },
@@ -33,12 +33,11 @@ export default function SideBarPage() {
           label: <Link to="/roles">New Rol</Link>,
           icon: "pi pi-fw pi-user-plus",
           style: {
-            backgroundColor: 'var(--bluegray-400)', // Estilo de fondo
+            backgroundColor: "var(--bluegray-400)", // Estilo de fondo
             color: "white", // Color del texto
             fontSize: "16px", // Tamaño de fuente
           },
         },
-       
       ],
     },
     {
@@ -73,16 +72,28 @@ export default function SideBarPage() {
       ],
     },
     {
-      label: "Edit",
+      label: "Membresias",
       icon: "pi pi-fw pi-pencil",
       items: [
         {
-          label: "Left",
-          icon: "pi pi-fw pi-align-left",
+          label: <Link to="/disciplinas">Disciplinas</Link>,
+          icon: "pi pi-fw pi-plus",
         },
         {
-          label: "Right",
-          icon: "pi pi-fw pi-align-right",
+          label: <Link to="/horario">Horarios</Link>,
+          icon: "pi pi-fw pi-plus",
+        },
+        {
+          label: <Link to="/entrenador">Entrenadores</Link>,
+          icon: "pi pi-fw pi-plus",
+        },
+        {
+          label: <Link to="/cliente">cliente</Link>,
+          icon: "pi pi-fw pi-plus",
+        },
+        {
+          label: <Link to="/membresia">membresia</Link>,
+          icon: "pi pi-fw pi-plus",
         },
         {
           label: "Center",

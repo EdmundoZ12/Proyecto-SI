@@ -32,6 +32,14 @@ import InventariosDemo from "./pages/InventarioPage";
 import { InventarioProvider } from "./context/inventarioContext";
 import { Nota_EntradaProvider } from "./context/nota-de-entradaContext";
 import Nota_EntradasDemo from "./pages/Nota_VentaPage";
+import { HorarioProvider } from "./context/horarioContext";
+import HorariosDemo from "./pages/HorarioPage";
+import { DisciplinaProvider } from "./context/disciplinaContext";
+import DisciplinasDemo from "./pages/DisciplinasPage";
+import { EntrenadorProvider } from "./context/entrenadorContext";
+import EntrenadoresDemo from "./pages/EntrenadoresPage";
+import ClienteComponent from "./pages/clienteComponent";
+import MembresiaComponent from "./pages/membresiaComponent";
 
 function App() {
   return (
@@ -45,62 +53,100 @@ function App() {
                   <ProductoProvider>
                     <InventarioProvider>
                       <Nota_EntradaProvider>
-                        <BrowserRouter>
-                          <Routes>
-                            <Route path="/login" element={<LoginPage />} />
-                            <Route path="/" element={<Page />} />
+                        <HorarioProvider>
+                          <DisciplinaProvider>
+                            <EntrenadorProvider>
+                              <BrowserRouter>
+                                <Routes>
+                                  <Route
+                                    path="/login"
+                                    element={<LoginPage />}
+                                  />
+                                  <Route path="/" element={<Page />} />
 
-                            <Route element={<ProtectedRoute />}>
-                              <Route
-                                path="/products"
-                                element={<ProductsDemo />}
-                              />
-                              <Route
-                                path="/funcionalidades"
-                                element={<FuncionalidadesDemo />}
-                              />
-                              <Route
-                                path="/categorias"
-                                element={<CategoriassDemo />}
-                              />
-                              <Route
-                                path="/proveedores"
-                                element={<ProveedoresDemo />}
-                              />
-                              <Route path="/roles" element={<RolesDemo />} />
-                              <Route path="/users" element={<UsersDemo />} />
-                              <Route path="/home" element={<SideBarPage />} />
-                              <Route
-                                path="/producto"
-                                element={<ProductoComponent />}
-                              />
-                              <Route
-                                path="/productos"
-                                element={<ProductosDemo />}
-                              />
-                              <Route
-                                path="/categoria"
-                                element={<CategoriaComponent />}
-                              />
-                              <Route
-                                path="/proveedor"
-                                element={<ProveedorComponent />}
-                              />
-                              <Route
-                                path="/inventario"
-                                element={<InventarioComponent />}
-                              />
-                              <Route
-                                path="/inventarios"
-                                element={<InventariosDemo />}
-                              />
-                              <Route
-                                path="/nota-de-entrada"
-                                element={<Nota_EntradasDemo />}
-                              />
-                            </Route>
-                          </Routes>
-                        </BrowserRouter>
+                                  <Route element={<ProtectedRoute />}>
+                                    <Route
+                                      path="/products"
+                                      element={<ProductsDemo />}
+                                    />
+                                    <Route
+                                      path="/funcionalidades"
+                                      element={<FuncionalidadesDemo />}
+                                    />
+                                    <Route
+                                      path="/categorias"
+                                      element={<CategoriassDemo />}
+                                    />
+                                    <Route
+                                      path="/proveedores"
+                                      element={<ProveedoresDemo />}
+                                    />
+                                    <Route
+                                      path="/roles"
+                                      element={<RolesDemo />}
+                                    />
+                                    <Route
+                                      path="/users"
+                                      element={<UsersDemo />}
+                                    />
+                                    <Route
+                                      path="/home"
+                                      element={<SideBarPage />}
+                                    />
+                                    <Route
+                                      path="/producto"
+                                      element={<ProductoComponent />}
+                                    />
+                                    <Route
+                                      path="/productos"
+                                      element={<ProductosDemo />}
+                                    />
+                                    <Route
+                                      path="/categoria"
+                                      element={<CategoriaComponent />}
+                                    />
+                                    <Route
+                                      path="/proveedor"
+                                      element={<ProveedorComponent />}
+                                    />
+                                    <Route
+                                      path="/horario"
+                                      element={<HorariosDemo />}
+                                    />
+                                    <Route
+                                      path="/disciplinas"
+                                      element={<DisciplinasDemo />}
+                                    />
+                                    <Route
+                                      path="/inventario"
+                                      element={<InventarioComponent />}
+                                    />
+                                    <Route
+                                      path="/entrenador"
+                                      element={<EntrenadoresDemo />}
+                                    />
+                                    <Route
+                                      path="/inventarios"
+                                      element={<InventariosDemo />}
+                                    />
+                                    <Route
+                                      path="/nota-de-entrada"
+                                      element={<Nota_EntradasDemo />}
+                                    />
+                                    <Route
+                                      path="/cliente"
+                                      element={<ClienteComponent />}
+                                    />
+                                    <Route
+                                      path="/membresia"
+                                      element={<MembresiaComponent />}
+                                    />
+                                  </Route>
+                                </Routes>
+                              </BrowserRouter>
+                            </EntrenadorProvider>
+                          </DisciplinaProvider>
+                        </HorarioProvider>
                       </Nota_EntradaProvider>
                     </InventarioProvider>
                   </ProductoProvider>

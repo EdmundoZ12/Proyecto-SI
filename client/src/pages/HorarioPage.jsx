@@ -16,33 +16,45 @@ import { InputText } from "primereact/inputtext";
 import { Tag } from "primereact/tag";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Checkbox } from "primereact/checkbox";
-import { useUsers } from "../context/userContext";
-import { useRoles } from "../context/rolContext";
+import { useFuncionalidades } from "../context/funcionalidadContext";
+import { useHorarios } from "../context/horarioContext";
 import SideBarPage from "./SideBarPage";
 import { useForm } from "react-hook-form";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { Calendar } from "primereact/calendar";
-import { Password } from "primereact/password";
-import { Dropdown } from "primereact/dropdown";
 
-export default function UsersDemo() {
+export default function HorariosDemo() {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   let emptyProduct = {
-    nombre: "",
-    activo: false,
-    password: "",
+    id: 0,
+    hora_inicio: null,
+    hora_fin: null,
+    dia: "",
   };
 
-  const { createUser, updateUser, getUser, getUsers, users, deleteUser } =
-    useUsers();
-
-  const { createRol, updateRol, getRol, roles, getRoles, deleteRol } =
-    useRoles();
-
+  const {
+    createFuncionalidad,
+    updateFuncionalidad,
+    getFuncionalidad,
+    getFuncionalidades,
+    funcionalidades,
+    deleteFuncionalidad,
+  } = useFuncionalidades();
+  const categories = [
+    { name: "Lunes", id: 0 },
+    { name: "Martes", id: 1 },
+    { name: "Miércoles", id: 2 },
+    { name: "Jueves", id: 3 },
+    { name: "Viernes", id: 4 },
+    { name: "Sábado", id: 5 },
+    { name: "Domingo", id: 6 },
+  ];
+  const { createHorario, updateHorario, getHorario, getHorarios, horarios } =
+    useHorarios();
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -50,7 +62,10 @@ export default function UsersDemo() {
   const [product, setProduct] = useState(emptyProduct);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [checked, setChecked] = useState(false);
+  const [time, setTime] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -61,11 +76,7 @@ export default function UsersDemo() {
   const dt = useRef(null);
 
   useEffect(() => {
-    getUsers();
-  }, []);
-
-  useEffect(() => {
-    getRoles();
+    getHorarios();
   }, []);
 
   const onGlobalFilterChange = (event) => {
@@ -80,7 +91,7 @@ export default function UsersDemo() {
 
     return (
       <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-        <h4 className="m-0">Gestionar Usuario</h4>
+        <h4 className="m-0">Gestionar Funcionalidad</h4>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -94,10 +105,22 @@ export default function UsersDemo() {
     );
   };
 
+  const onCategoryChange = async (e) => {
+    let _product = { ...product };
+    let selectedCategory = categories.find(
+      (category) => category.id === e.value
+    );
+    _product["dia"] = e.value;
+
+    setProduct(_product);
+    setSelectedCategory(selectedCategory);
+  };
+
   const openNew = () => {
     setProduct(emptyProduct);
     // Configura el estado 'checked' en 'false' al crear un nuevo producto
     setChecked(false);
+    setSelectedCategory(null);
     setSubmitted(false);
     setProductDialog(true);
   };
@@ -132,15 +155,18 @@ export default function UsersDemo() {
   }, [loading]);
 
   const saveProduct = async () => {
-    setSubmitted(true);
+    try {
+      setSubmitted(true);
 
-    if (product.nombre.trim()) {
       let _product = { ...product };
-      _product.activo = checked;
-
+        const dato={
+            hora_inicio:`${product.hora_inicio}:00`,
+            hora_fin:`${product.hora_fin}:00`,
+            dia:product.dia
+        }
+    console.log(dato)
       if (product.id) {
-        console.log(product.id);
-        await updateUser(product.id, _product);
+        await updateHorario(product.id, dato);
         toast.current.show({
           severity: "success",
           summary: "Successful",
@@ -148,8 +174,7 @@ export default function UsersDemo() {
           life: 3000,
         });
       } else {
-        console.log(_product);
-        await createUser(_product);
+        await createHorario(dato);
         toast.current.show({
           severity: "success",
           summary: "Successful",
@@ -159,29 +184,33 @@ export default function UsersDemo() {
       }
 
       // Después de la actualización, recarga los datos
-      const updatedData = await getUsers();
+      const updatedData = await getHorarios();
       setProducts(updatedData);
 
       setProductDialog(false);
       setProduct(emptyProduct);
       setSubmitted(false);
+    } catch (error) {
+      console.error(error);
     }
   };
 
   // ...
 
   const editProduct = (funcionalidad) => {
+    console.log("editProduct llamado");
+
     setProduct({ ...funcionalidad });
-    setChecked(funcionalidad.activo); // Set the checkbox state based on the functionality
-    // Ensure fecha_nacimiento is a JavaScript Date object
-    setProduct((prevProduct) => ({
-      ...prevProduct,
-      fecha_nacimiento: funcionalidad.fecha_nacimiento
-        ? new Date(funcionalidad.fecha_nacimiento)
-        : null,
-    }));
-    setProductDialog(true); // Show the edit dialog
+
+    // Busca la categoría correspondiente al día del producto
+    const selectedCategory = categories.find(
+      (category) => category.name === funcionalidad.dia
+    );
+
+    setSelectedCategory(selectedCategory);
+    setProductDialog(true); // Muestra el diálogo de edición
   };
+
   const confirmDeleteProduct = (product) => {
     setProduct(product);
     setDeleteProductDialog(true);
@@ -226,18 +255,19 @@ export default function UsersDemo() {
 
   const onInputChange = (e, name) => {
     const val = name === "activo" ? e.target.checked : e.target.value;
-    console.log(val)
     let _product = { ...product };
     _product[`${name}`] = val;
     setProduct(_product);
   };
 
-  const onInputNumberChange = (e, name) => {
-    const val = e.value || 0;
+  const onInputHora = (e, name) => {
+    const fullTimeString = e.target.value;
+
+    // Puedes aplicar alguna validación adicional si es necesario
+
     let _product = { ...product };
-
-    _product[`${name}`] = val;
-
+    console.log(fullTimeString);
+    _product[`${name}`] = fullTimeString;
     setProduct(_product);
   };
 
@@ -245,17 +275,10 @@ export default function UsersDemo() {
     return (
       <div className="flex flex-wrap gap-2">
         <Button
-          label="Nuevo Usuario"
+          label="Nueva Horario"
           icon="pi pi-plus"
           severity="success"
           onClick={openNew}
-        />
-        <Button
-          label="Delete"
-          icon="pi pi-trash"
-          severity="danger"
-          onClick={confirmDeleteSelected}
-          disabled={!selectedProducts || !selectedProducts.length}
         />
       </div>
     );
@@ -272,16 +295,6 @@ export default function UsersDemo() {
     );
   };
 
-  const statusBodyTemplate = (rowData) => {
-    const activo = rowData.activo;
-
-    return (
-      <span className={activo ? "text-green-500" : "text-red-500"}>
-        {activo ? "Activo" : "Inactivo"}
-      </span>
-    );
-  };
-
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
@@ -292,14 +305,17 @@ export default function UsersDemo() {
           className="mr-2"
           onClick={() => editProduct(rowData)}
         />
-        <Button
-          icon="pi pi-trash"
-          rounded
-          outlined
-          severity="danger"
-          onClick={() => confirmDeleteProduct(rowData)}
-        />
       </React.Fragment>
+    );
+  };
+
+  const statusBodyTemplate = (rowData) => {
+    const activo = rowData.activo;
+
+    return (
+      <span className={activo ? "text-green-500" : "text-red-500"}>
+        {activo ? "Activo" : "Inactivo"}
+      </span>
     );
   };
 
@@ -355,7 +371,7 @@ export default function UsersDemo() {
 
         <DataTable
           ref={dt}
-          value={users}
+          value={horarios}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="id"
@@ -367,55 +383,25 @@ export default function UsersDemo() {
           filters={filters}
           header={renderHeader}
         >
-          <Column selectionMode="multiple" exportable={false}></Column>
 
           <Column
-            field="nombre"
-            header="Nombre"
+            field="hora_inicio"
+            header="Hora de Inicio"
             sortable
             style={{ minWidth: "16rem" }}
           ></Column>
-
           <Column
-            field="apellido"
-            header="Apellido"
+            field="hora_fin"
+            header="Hora de Finalizacion"
             sortable
             style={{ minWidth: "16rem" }}
           ></Column>
-
           <Column
-            field="ci"
-            header="Carnet de Identidad"
+            field="dia"
+            header="Dia"
             sortable
             style={{ minWidth: "16rem" }}
           ></Column>
-
-          <Column
-            field="telefono"
-            header="Telefono"
-            sortable
-            style={{ minWidth: "16rem" }}
-          ></Column>
-
-          <Column
-            field="direccion"
-            header="Direccion"
-            sortable
-            style={{ minWidth: "16rem" }}
-          ></Column>
-
-          <Column
-            field="fecha_nacimiento"
-            header="Fecha de Nacimiento"
-            sortable
-            style={{ minWidth: "16rem" }}
-          ></Column>
-
-          <Column
-            body={statusBodyTemplate}
-            header="Estado"
-            style={{ minWidth: "8rem" }}
-          />
 
           <Column
             body={actionBodyTemplate}
@@ -428,206 +414,55 @@ export default function UsersDemo() {
         visible={productDialog}
         style={{ width: "32rem" }}
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Product Details"
+        header="Detalles del Horario"
         modal
         className="p-fluid"
         footer={productDialogFooter}
         onHide={hideDialog}
       >
-        <div className="field">
-          <label htmlFor="nombre" className="font-bold">
-            Name
+        <div className="flex-auto">
+          <label htmlFor="calendar-timeonly" className="font-bold block mb-2">
+            Hora De Inicio
           </label>
-
-          <InputText
-            id="nombre"
-            value={product.nombre}
-            onChange={(e) => onInputChange(e, "nombre")}
-            required
-            autoFocus
-            className={classNames({
-              "p-invalid": submitted && !product.nombre,
-            })}
-          />
-          {submitted && !product.nombre && (
-            <small className="p-error">Nombre es requerido.</small>
-          )}
-        </div>
-
-        <div className="field">
-          <label htmlFor="apellido" className="font-bold">
-            Apellido
-          </label>
-
-          <InputText
-            id="apellido"
-            value={product.apellido}
-            onChange={(e) => onInputChange(e, "apellido")}
-            required
-            autoFocus
-            className={classNames({
-              "p-invalid": submitted && !product.apellido,
-            })}
-          />
-          {submitted && !product.apellido && (
-            <small className="p-error">Apellido is requerido.</small>
-          )}
-        </div>
-
-        <div className="field">
-          <label htmlFor="ci" className="font-bold">
-            CI
-          </label>
-          <InputNumber
-            inputId="ci"
-            value={product.ci}
-            onValueChange={(e) => onInputNumberChange(e, "ci")}
-            useGrouping={false}
-            required
-            autoFocus
-            className={classNames({ "p-invalid": submitted && !product.ci })}
-          />
-          {submitted && !product.ci && (
-            <small className="p-error">
-              El Carnet de Identidad es requerido.
-            </small>
-          )}
-        </div>
-
-        <div className="field">
-          <label htmlFor="telefono" className="font-bold">
-            Telefono
-          </label>
-
-          <InputText
-            id="telefono"
-            value={product.telefono}
-            onChange={(e) => onInputChange(e, "telefono")}
-            required
-            autoFocus
-            className={classNames({
-              "p-invalid": submitted && !product.telefono,
-            })}
-          />
-        </div>
-
-        <div className="field">
-          <label htmlFor="fecha_nacimiento" className="font-bold">
-            Fecha de Nacimiento
-          </label>
-          <Calendar
-            id="fecha_nacimiento"
-            value={product.fecha_nacimiento}
-            onChange={(e) => onInputChange(e, "fecha_nacimiento")}
-            showIcon
-            dateFormat="yy/mm/dd"
-            required
-            autoFocus
-            className={classNames({
-              "p-invalid": submitted && !product.fecha_nacimiento,
-            })}
-          />
-          {submitted && !product.fecha_nacimiento && (
-            <small className="p-error">
-              La fecha de nacimiento es requerida.
-            </small>
-          )}
-        </div>
-
-        <div className="field">
-          <label htmlFor="fecha_nacimiento" className="font-bold">
-            Nombre de Usuario
-          </label>
-          <div className="p-inputgroup flex-1">
-            <span className="p-inputgroup-addon">
-              <i className="pi pi-user"></i>
-            </span>
-            <InputText
-              id="username"
-              value={product.username}
-              onChange={(e) => onInputChange(e, "username")}
-              required
-              autoFocus
-              placeholder="Username"
-              className={classNames({
-                "p-invalid": submitted && !product.username,
-              })}
-            />
-            {submitted && !product.username && (
-              <small className="p-error">Username is requerido.</small>
-            )}
-          </div>
-        </div>
-
-        <div className="field">
-          <label htmlFor="password" className="font-bold">
-            Contraseña
-          </label>
-          <Password
-            id="password"
-            value={product.password}
-            onChange={(e) => onInputChange(e, "password")}
-            required
-            autoFocus
-            placeholder="min 4 caracteres"
-            toggleMask
-            className={classNames({
-              "p-invalid": submitted && !product.password,
-            })}
-          />
-          {submitted && !product.password && (
-            <small className="p-error">Password is requerido.</small>
-          )}
-        </div>
-
-        <div className="field">
-          <label htmlFor="id_rol" className="font-bold">
-            Rol
-          </label>
-          <Dropdown
-            inputId="id_rol"
-            name="id_rol"
-            value={product.id_rol} // Establece el valor seleccionado
-            options={roles.map((role) => ({
-              label: role.nombre,
-              value: role.id,
-            }))} // Mapea los roles a objetos con label y value
-            placeholder="Select a Role"
-            onChange={(e) => onInputNumberChange(e, "id_rol")} // Actualiza el campo "id_rol"
-            className={classNames({
-              "p-invalid": submitted && !product.id_rol,
-            })}
-          />
-          {submitted && !product.id_rol && (
-            <small className="p-error">Rol is required.</small>
-          )}
-        </div>
-
-        <div className="field">
-          <label htmlFor="direccion" className="font-bold">
-            Direccion
-          </label>
-
-          <InputText
-            id="direccion"
-            value={product.direccion}
-            onChange={(e) => onInputChange(e, "direccion")}
-            required
-            autoFocus
-            className={classNames({
-              "p-invalid": submitted && !product.direccion,
-            })}
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="activo">Activo:</label>
           <input
-            type="checkbox"
-            id="activo"
-            name="activo"
-            checked={checked} // Configura el estado del checkbox
-            onChange={(e) => setChecked(e.target.checked)} // Cambia el estado cuando se marca/desmarca el checkbox
+            type="time"
+            id="hora_inicio"
+            value={product.hora_inicio}
+            onChange={(e) => onInputHora(e,"hora_inicio")}
           />
+        </div>
+
+        <div className="flex-auto">
+          <label htmlFor="calendar-timeonly" className="font-bold block mb-2">
+            Hora Fin
+          </label>
+          <input
+            type="time"
+            id="hora_fin"
+            value={product.hora_fin}
+            onChange={(e) => onInputHora(e, "hora_fin")}
+          />
+        </div>
+
+        {/* Proveedores */}
+        <div className="field">
+          <label className="mb-3 font-bold">Dias</label>
+          <div className="formgrid grid">
+            {categories.map((proveedor) => (
+              <div className="field-radiobutton col-6" key={proveedor.id}>
+                <RadioButton
+                  inputId={`proveedor${proveedor.id}`}
+                  name="dia"
+                  value={proveedor.name}
+                  onChange={onCategoryChange}
+                  checked={product.dia === proveedor.name}
+                />
+                <label htmlFor={`proveedor${proveedor.id}`}>
+                  {proveedor.name}
+                </label>
+              </div>
+            ))}
+          </div>
         </div>
       </Dialog>
 

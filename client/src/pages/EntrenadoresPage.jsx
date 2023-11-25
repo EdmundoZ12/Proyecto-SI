@@ -21,8 +21,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Dropdown } from "primereact/dropdown";
 import { useProveedores } from "../context/proveedorContext";
 import { useAuth } from "../context/authContext";
+import { useEntrenadores } from "../context/entrenadorContext";
+import { useDisciplinas } from "../context/disciplinaContext";
+import { useHorarios } from "../context/horarioContext";
+import { Checkbox } from "primereact/checkbox";
 
-export default function Nota_EntradasDemo() {
+export default function EntrenadoresDemo() {
   const {
     formState: { errors },
   } = useForm();
@@ -32,14 +36,21 @@ export default function Nota_EntradasDemo() {
     empresa: null,
     monto: null,
     descripcion: "",
-    precio: 0.0,
-    id_proveedor: null,
-    cod_producto: null,
-    categoria: "",
-    monto_producto: null,
+    id_usuario: null,
+    cod_disciplina: null,
+    horarios: null,
   };
-
-  const { inventario, getProductosInventario } = useInventario();
+  const {
+    disciplinas,
+    getDisciplinas,
+    getDisciplina,
+    createDisciplina,
+    updateDisciplina,
+  } = useDisciplinas();
+  const { entrenadores, getEntrenadores, createEntrenador, updateEntrenador,getSoloEntrenadores,soloentrenadores } =
+    useEntrenadores();
+  const { createHorario, updateHorario, getHorario, getHorarios, horarios } =
+    useHorarios();
 
   const { nota_Entrada, createNota_Entrada, getNotas_Entrada } =
     useNota_Entrada();
@@ -67,10 +78,13 @@ export default function Nota_EntradasDemo() {
     precio: 0.0,
     cod_producto: null,
     nombre: "",
+    id_usuario: null,
+    cod_disciplina: null,
   };
 
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
+  const [selectedFuncionalidades, setSelectedFuncionalidades] = useState([]);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -92,8 +106,10 @@ export default function Nota_EntradasDemo() {
 
   useEffect(() => {
     getNotas_Entrada();
-    getProveedores();
-    getProductos();
+    getDisciplinas();
+    getEntrenadores();
+    getHorarios();
+    getSoloEntrenadores();
     user.id;
   }, []);
 
@@ -126,6 +142,17 @@ export default function Nota_EntradasDemo() {
 
     // Resto del código...
   };
+
+  const handleFuncionalidadChange = (id) => {
+    if (selectedFuncionalidades.includes(id)) {
+      setSelectedFuncionalidades(
+        selectedFuncionalidades.filter((funcId) => funcId !== id)
+      );
+    } else {
+      setSelectedFuncionalidades([...selectedFuncionalidades, id]);
+    }
+  };
+
   const renderHeader = () => {
     const value = filters["global"] ? filters["global"].value : "";
 
@@ -149,6 +176,8 @@ export default function Nota_EntradasDemo() {
     setProduct(emptyProduct);
     setEntrada(emptyEntrada);
     setProductosEntrada([]);
+    setChecked(false);
+    setSelectedFuncionalidades([]);
     setSubmitted(false);
     setEntradaDialog(true);
   };
@@ -171,15 +200,12 @@ export default function Nota_EntradasDemo() {
     setSubmitted(true);
 
     const datos = {
-      id_usuario: user.id,
-      id_proveedor: product.id_proveedor,
-      productos: productosEntrada.map((producto) => ({
-        cod_producto: producto.cod,
-        cantidad: producto.cantidad,
-        precio: producto.precio,
-      })),
+      id_usuario: product.id_usuario,
+      cod_disciplina: product.cod_disciplina,
+      horarios: selectedFuncionalidades,
     };
-    await createNota_Entrada(datos);
+
+    await createEntrenador(datos);
     toast.current.show({
       severity: "success",
       summary: "Successful",
@@ -187,8 +213,17 @@ export default function Nota_EntradasDemo() {
       life: 3000,
     });
 
+    console.log(datos);
+    /* await createNota_Entrada(datos);
+    toast.current.show({
+      severity: "success",
+      summary: "Successful",
+      detail: "Product Created",
+      life: 3000,
+    });*/
+
     // Después de la actualización, recarga los datos
-    const updatedData = await getNotas_Entrada();
+    const updatedData = await getEntrenadores();
     setProducts(updatedData);
 
     setProductDialog(false);
@@ -270,7 +305,7 @@ export default function Nota_EntradasDemo() {
   const onCategoryChange = async (e) => {
     let _product = { ...product };
 
-    _product["id_proveedor"] = e.value;
+    _product["cod_disciplina"] = e.value;
 
     setProduct(_product);
   };
@@ -302,20 +337,18 @@ export default function Nota_EntradasDemo() {
 
   const onInputNumberChange = async (e, name) => {
     const val = e.value || 0;
-    let _product = { ...entrada };
+    let _product = { ...product };
+    console.log(val)
     _product[`${name}`] = val;
 
-    setEntrada(_product);
+    setProduct(_product);
   };
   const onInputNumberChange2 = async (e, name) => {
     const val = e.value || 0;
     let _product = { ...entrada };
     console.log(e.value);
-    const nombrepro = await getProducto(e.value);
 
-    console.log(nombrepro.nombre);
     _product[`${name}`] = val;
-    _product["nombre"] = nombrepro.nombre;
 
     setEntrada(_product);
   };
@@ -422,7 +455,7 @@ export default function Nota_EntradasDemo() {
 
         <DataTable
           ref={dt}
-          value={nota_Entrada}
+          value={entrenadores}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="cod"
@@ -435,22 +468,15 @@ export default function Nota_EntradasDemo() {
           header={renderHeader}
         >
           <Column
-            field="nombre"
-            header="Nombre Usuario"
+            field="nombre_entrenador"
+            header="Entrenador"
             sortable
             style={{ minWidth: "16rem" }}
           ></Column>
 
           <Column
-            field="empresa"
-            header="Nombre de Empresa"
-            sortable
-            style={{ minWidth: "16rem" }}
-          ></Column>
-
-          <Column
-            field="monto"
-            header="Monto Total"
+            field="nombre_disciplina"
+            header="Disciplina"
             sortable
             style={{ minWidth: "16rem" }}
           ></Column>
@@ -503,12 +529,12 @@ export default function Nota_EntradasDemo() {
         </div>
       </Dialog>
 
-      {/*Crear Nueva nota de entrada */}
+      {/*Crear Nuevo Entrenador-Disciplina */}
       <Dialog
         visible={entradaDialog}
         style={{ width: "70rem", margin: "0 auto" }}
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Detalle nota entrada"
+        header="Detalle Entrenador-Disciplina"
         modal
         className="p-fluid"
         footer={EntradaDialogFooter}
@@ -517,99 +543,66 @@ export default function Nota_EntradasDemo() {
         {/* nombre Producto*/}
         <div className="field">
           <label htmlFor="cod_producto" className="font-bold">
-            Producto
+            Entrenadores
           </label>
           <Dropdown
-            inputId="cod_producto"
-            name="cod_producto"
-            value={entrada.cod_producto} // Establece el valor seleccionado
-            options={productos.map((producto) => ({
-              label: producto.nombre,
-              value: producto.cod,
+            inputId="id_usuario"
+            name="id_usuario"
+            value={product.id_usuario} // Establece el valor seleccionado
+            
+            options={soloentrenadores.map((entrenador) => ({
+              label: entrenador.nombre,
+              value: entrenador.id,
             }))} // Mapea los roles a objetos con label y value
-            placeholder="Selecciona un Producto"
-            onChange={(e) => onInputNumberChange2(e, "cod_producto")} // Actualiza el campo "id_rol"
+            placeholder="Selecciona un Entrenador"
+            onChange={(e) => onInputNumberChange(e, "id_usuario")} // Actualiza el campo "id_rol"
           />
         </div>
 
         {/* Proveedores */}
         <div className="field">
-          <label className="mb-3 font-bold">Proveedores</label>
+          <label className="mb-3 font-bold">Disciplinas</label>
           <div className="formgrid grid">
-            {proveedores.map((proveedor) => (
-              <div className="field-radiobutton col-6" key={proveedor.id}>
+            {disciplinas.map((disciplina) => (
+              <div className="field-radiobutton col-6" key={disciplina.cod}>
                 <RadioButton
-                  inputId={`proveedor${proveedor.id}`}
-                  name="id_proveedor"
-                  value={proveedor.id}
+                  inputId={`disciplina${disciplina.cod}`}
+                  name="cod_disciplina"
+                  value={disciplina.cod}
                   onChange={onCategoryChange}
-                  checked={product.id_proveedor === proveedor.id}
+                  checked={product.cod_disciplina === disciplina.cod}
                 />
-                <label htmlFor={`proveedor${proveedor.id}`}>
-                  {proveedor.empresa}
+                <label htmlFor={`proveedor${disciplina.cod}`}>
+                  {disciplina.nombre}
                 </label>
               </div>
             ))}
           </div>
         </div>
 
-        <div
-          className="formgrid grid"
-          style={{ display: "flex", justifyContent: "space-between" }}
-        >
-          {/* Entrada de Cantidad */}
-          <div className="field col" style={{ marginRight: "10px" }}>
-            <label htmlFor="cantidad" className="font-bold">
-              Cantidad
-            </label>
-            <InputNumber
-              inputId="cantidad"
-              value={entrada.cantidad}
-              onValueChange={(e) => onInputNumberChange(e, "cantidad")}
-              mode="decimal"
-              showButtons
-              min={0}
-              // max={100}
-            />
+        <div className="field">
+          <label className="mb-3 font-bold">Escoge uno o mas horarios</label>
+          <div className="flex flex-column gap-3">
+            {horarios.map((horario) => {
+              return (
+                <div key={horario.id} className="flex align-items-center">
+                  <Checkbox
+                    inputId={horario.id}
+                    name={`horario-${horario.id}`}
+                    value={horario.id}
+                    checked={
+                      selectedFuncionalidades &&
+                      selectedFuncionalidades.includes(horario.id)
+                    }
+                    onChange={() => handleFuncionalidadChange(horario.id)}
+                  />
+                  <label htmlFor={`horario-${horario.id}`}>
+                    {`${horario.dia} de ${horario.hora_inicio} hasta ${horario.hora_fin}`}
+                  </label>
+                </div>
+              );
+            })}
           </div>
-
-          {/* Entrada de Precio */}
-          <div className="field col" style={{ marginRight: "10px" }}>
-            <label htmlFor="precio" className="font-bold">
-              Precio
-            </label>
-            <InputNumber
-              id="precio"
-              value={entrada.precio}
-              onValueChange={(e) => onInputNumberChange(e, "precio")}
-              mode="currency"
-              currency="USD"
-              locale="en-US"
-            />
-          </div>
-
-          {/* Botón */}
-          <div className="field col" style={{ marginTop: "24px" }}>
-            <Button
-              icon="pi pi-plus"
-              aria-label="Filter"
-              onClick={agregarProducto}
-            />
-          </div>
-        </div>
-
-        {/* Tabla de Productos */}
-        <div className="card">
-          <DataTable
-            value={productosEntrada}
-            showGridlines
-            tableStyle={{ minWidth: "50rem" }}
-          >
-            <Column field="cod" header="Cod"></Column>
-            <Column field="nombre" header="Nombre del Producto"></Column>
-            <Column field="cantidad" header="Cantidad"></Column>
-            <Column field="precio" header="Precio"></Column>
-          </DataTable>
         </div>
       </Dialog>
     </div>
