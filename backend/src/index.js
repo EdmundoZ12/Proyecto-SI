@@ -1,5 +1,5 @@
-const app=require('./app')
+const app = require('./app')
 
 
-app.listen(3500)
-console.log('Server on port',3500)
+app.listen(3000)
+console.log('Server on port', 3000)
