@@ -3,16 +3,18 @@ import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { PanelMenu } from "primereact/panelmenu";
 import { Link } from "react-router-dom";
+import logo from "../assets/Borcelle.png"
+
 
 export default function SideBarPage() {
   const [visible, setVisible] = useState(false);
   const items = [
     {
-      label: "Users",
+      label: "Gestion de Usuario",
       icon: "pi pi-fw pi-user",
       items: [
         {
-          label: <Link to="/users">New User</Link>,
+          label: <Link to="/users">Usuario</Link>,
           icon: "pi pi-fw pi-user-plus",
           style: {
             backgroundColor: 'var(--bluegray-400)', // Estilo de fondo
@@ -21,7 +23,7 @@ export default function SideBarPage() {
           },
         },
         {
-          label: <Link to="/funcionalidades">New Functionality</Link>,
+          label: <Link to="/funcionalidades">Funcionalidad</Link>,
           icon: "pi pi-fw pi-user-plus",
           style: {
             backgroundColor: 'var(--bluegray-400)', // Estilo de fondo
@@ -30,7 +32,7 @@ export default function SideBarPage() {
           },
         },
         {
-          label: <Link to="/roles">New Rol</Link>,
+          label: <Link to="/roles">Rol</Link>,
           icon: "pi pi-fw pi-user-plus",
           style: {
             backgroundColor: 'var(--bluegray-400)', // Estilo de fondo
@@ -42,7 +44,7 @@ export default function SideBarPage() {
       ],
     },
     {
-      label: "Products",
+      label: "Gestion de producto",
       icon: "pi pi-fw pi-cart-plus",
       items: [
         {
@@ -73,7 +75,7 @@ export default function SideBarPage() {
       ],
     },
     {
-      label: "Membresias",
+      label: "Gestion de Membresias",
       icon: "pi pi-fw pi-pencil",
       items: [
         {
@@ -88,17 +90,17 @@ export default function SideBarPage() {
           label: <Link to="/entrenador">Entrenadores</Link>,
           icon: "pi pi-fw pi-plus",
         },
-        {
+        /*{
           label: "Center",
           icon: "pi pi-fw pi-align-center",
         },
         {
           label: "Justify",
           icon: "pi pi-fw pi-align-justify",
-        },
+        },*/
       ],
     },
-    {
+    /*{
       label: "Events",
       icon: "pi pi-fw pi-calendar",
       items: [
@@ -127,13 +129,16 @@ export default function SideBarPage() {
           ],
         },
       ],
-    },
+    },*/
   ];
+  const sidebar={
+    backgroundColor: '#151623',
+  }
 
   return (
-    <div className="card flex justify-content-between bg-orange-200 ">
+    <div className="card flex justify-content-between " style={sidebar}>
       <Sidebar
-        className="bg-orange-300"
+       style={sidebar}
         visible={visible}
         onHide={() => setVisible(false)}
       >
@@ -145,7 +150,7 @@ export default function SideBarPage() {
           }}
         >
           <img
-            src="https://static.vecteezy.com/system/resources/previews/006/406/317/non_2x/fitness-and-training-icons-gym-and-workout-vector.jpg"
+            src={logo}
             style={{
               width: "50%",
               borderRadius: "50%", // Imagen circular

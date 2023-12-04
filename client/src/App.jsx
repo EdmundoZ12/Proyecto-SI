@@ -11,7 +11,6 @@ import SideBarPage from "./pages/SideBarPage";
 import Page from "./pages/Page";
 import { FuncionalidadProvider } from "./context/funcionalidadContext";
 import { AuthProvider } from "./context/authContext";
-import LoginPage from "./pages/LoginPage";
 import FuncionalidadesDemo from "./pages/FuncionalidadesPage";
 import RolesDemo from "./pages/RolesPage";
 import { RolProvider } from "./context/rolContext";
@@ -38,6 +37,7 @@ import { DisciplinaProvider } from "./context/disciplinaContext";
 import DisciplinasDemo from "./pages/DisciplinasPage";
 import { EntrenadorProvider } from "./context/entrenadorContext";
 import EntrenadoresDemo from "./pages/EntrenadoresPage";
+import Login from "./pages/Login/Login";
 
 function App() {
   return (
@@ -58,11 +58,11 @@ function App() {
                                 <Routes>
                                   <Route
                                     path="/login"
-                                    element={<LoginPage />}
+                                    element={<Login/>}
                                   />
                                   <Route path="/" element={<Page />} />
 
-                                  <Route element={<ProtectedRoute />}>
+                                  <Route >
                                     <Route
                                       path="/products"
                                       element={<ProductsDemo />}

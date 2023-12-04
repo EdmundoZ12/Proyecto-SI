@@ -1,5 +1,6 @@
 html {
   font-size: 14px;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -7,7 +8,7 @@ font-family: var(--font-family);
 font-weight: normal;
 background: var(--surface-ground);
 color: var(--text-color);
-padding: 1rem;
+
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
