@@ -18,6 +18,8 @@ const disciplina = require('./routes/disciplina.routes');
 const entrenadores = require('./routes/entrenador.routes');
 const clienteRoute = require('./routes/cliente.routes');
 const MembresiaRoute = require('./routes/membresia.routes');
+const BitacoraRoute=require('./routes/bitacora.routes');
+const ReportesRoute=require('./routes/reporte.routes');
 
 const app=express()
 
@@ -30,7 +32,9 @@ app.use(express.json( ))
 app.use(cookieParser());
 
 app.use('/api',authRoutes)
+app.use('/api',ReportesRoute)
 app.use('/api',nota_de_entradaRoute)
+app.use('/api',BitacoraRoute)
 app.use('/api',entrenadores)
 app.use('/api',disciplina)
 app.use('/api',rolesRoutes)

@@ -1,5 +1,9 @@
 const pool = require("../db");
-
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { createAccessToken } = require("../libs/jwt");
+const { TOKEN_SECRET } = require('../config');
+// tabla global a usar
 // tabla global a usar
 const tabla = 'categoria';
 
@@ -56,6 +60,19 @@ const createCategoria = async(req, res) => {
 
             // Confirmar la transacción
             await client.query("COMMIT");
+            // bitacora
+            const fechaActual = new Date();
+            const fechaFormateada = fechaActual.toISOString();
+            const { token } = req.cookies;
+            const accion = `creo la categoria con ID = ${insertResult.rows[0].id}`;
+
+            if (token) {
+                console.log("entro");
+                const decodedToken = jwt.verify(token, TOKEN_SECRET);
+                const a = await pool.query("INSERT INTO Bitacora (Fecha_Hora, Id_Usuario,accion) VALUES ($1, $2, $3)", [fechaFormateada, decodedToken.id, accion]);
+            }
+            // bitacora
+
 
             // Devolver el resultado
             res.json(insertResult.rows[0]);

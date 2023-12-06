@@ -106,6 +106,24 @@ export default function SideBarPage() {
       ],
     },
     {
+      label: "Reportes",
+      icon: "pi pi-fw pi-pencil",
+      items: [
+        {
+          label: <Link to="/reporteentrada">Nota De Entrada</Link>,
+          icon: "pi pi-fw pi-plus",
+        },
+        {
+          label: <Link to="/reportefactura">Facturas</Link>,
+          icon: "pi pi-fw pi-plus",
+        },
+        {
+          label: <Link to="/reporteclimem">Membresias</Link>,
+          icon: "pi pi-fw pi-plus",
+        },
+      ],
+    },
+    {
       label: "Events",
       icon: "pi pi-fw pi-calendar",
       items: [

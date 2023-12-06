@@ -43,7 +43,7 @@ const Notas_Entrada = async (req, res) => {
     SELECT
     PERSONA.NOMBRE,
     PROVEEDOR.EMPRESA,
-    NOTA_DE_ENTRADA.MONTO,
+    CAST(NOTA_DE_ENTRADA.MONTO AS numeric) AS monto,
     (
       SELECT
         json_agg(json_build_object(
@@ -51,6 +51,7 @@ const Notas_Entrada = async (req, res) => {
           'nombre', PRODUCTO.NOMBRE,
           'cantidad', DETALLE_ENTRADA.CANTIDAD,
           'precio', DETALLE_ENTRADA.PRECIO,
+          'fecha',DETALLE_ENTRADA.FECHA,
           'monto_producto', DETALLE_ENTRADA.MONTO_PRODUCTO
         ))
       FROM
@@ -70,6 +71,10 @@ const Notas_Entrada = async (req, res) => {
     AND NOTA_DE_ENTRADA.ID_USUARIO = USUARIO.ID_PERSONA
     AND NOTA_DE_ENTRADA.ID_PROVEEDOR = PROVEEDOR.ID;
           `);
+
+    result.rows.forEach((row) => {
+      row.monto = parseFloat(row.monto);
+    });
 
     res.json(result.rows);
   } catch (error) {
