@@ -19,6 +19,7 @@ import SideBarPage from "./SideBarPage";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { Dropdown } from "primereact/dropdown";
+
 import { useProveedores } from "../context/proveedorContext";
 import { useAuth } from "../context/authContext";
 import { useEntrenadores } from "../context/entrenadorContext";
@@ -111,6 +112,8 @@ export default function EntrenadoresDemo() {
     getHorarios();
     getSoloEntrenadores();
     user.id;
+
+    console.log(entrenadores);
   }, []);
 
   const onGlobalFilterChange = (event) => {

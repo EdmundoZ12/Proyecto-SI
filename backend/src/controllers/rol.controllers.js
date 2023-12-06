@@ -1,5 +1,8 @@
 const pool = require("../db");
 
+const { TOKEN_SECRET } = require('../config');
+const jwt = require("jsonwebtoken");
+
 // get roles
 const getRoles = async(req, res) => {
     try {
@@ -59,6 +62,18 @@ const createRol = async(req, res) => {
 
 
             // res.json(valor.rows[0]);
+
+            // bitacora
+            const fechaActual = new Date();
+            const fechaFormateada = fechaActual.toISOString();
+            const { token } = req.cookies;
+            const accion = `creo el rol con ID = ${valor.rows[0].id}`;
+
+            if (token) {
+                const decodedToken = jwt.verify(token, TOKEN_SECRET);
+                await pool.query("INSERT INTO Bitacora (Fecha_Hora, Id_Usuario,accion) VALUES ($1, $2, $3)", [fechaFormateada, decodedToken.id, accion]);
+            }
+            // bitacora
             res.json({ succes: "Rol creado" });
 
         } else {
@@ -73,8 +88,8 @@ const createRol = async(req, res) => {
 
 
 const updateRol = async(req, res) => {
-  const id=req.params.id;
-    const {  nombre, permisos } = req.body;
+    const id = req.params.id;
+    const { nombre, permisos } = req.body;
 
     try {
         const existingRol = await pool.query(
@@ -97,6 +112,18 @@ const updateRol = async(req, res) => {
                     "INSERT INTO Permiso_Rol (Id_Funcionalidad, Id_Rol) VALUES ($1, $2)", [permisoId, id]
                 );
             }
+
+            // bitacora
+            const fechaActual = new Date();
+            const fechaFormateada = fechaActual.toISOString();
+            const { token } = req.cookies;
+            const accion = `actualizo el rol con ID = ${id}`;
+
+            if (token) {
+                const decodedToken = jwt.verify(token, TOKEN_SECRET);
+                await pool.query("INSERT INTO Bitacora (Fecha_Hora, Id_Usuario,accion) VALUES ($1, $2, $3)", [fechaFormateada, decodedToken.id, accion]);
+            }
+            // bitacora
 
             res.json({ success: "Rol actualizado" });
         } else {

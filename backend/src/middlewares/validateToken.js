@@ -1,20 +1,22 @@
-const jwt= require('jsonwebtoken');
-const {TOKEN_SECRET} = require('../config');
-const authRequired=(req,res,next)=>{
-    const {token}=req.cookies;
+const jwt = require('jsonwebtoken');
+const { TOKEN_SECRET } = require('../config');
+
+const authRequired = (req, res, next) => {
+    const { token } = req.cookies;
+    // console.log("authRequired" + token)
     if (!token) {
-        return res.status(401).json({message:"No token, autorizacion denegada"});
+        return res.status(401).json({ message: "No token, autorizacion denegada" });
     }
 
-    jwt.verify(token,TOKEN_SECRET,(err,user)=>{
+    jwt.verify(token, TOKEN_SECRET, (err, user) => {
         if (err) {
-            return res.status(401).json({message:"Token Invalido"});
+            return res.status(401).json({ message: "Token Invalido" });
         }
-        req.user=user;
+        req.user = user;
         next()
     })
 }
 
-module.exports={
+module.exports = {
     authRequired
 }

@@ -99,7 +99,8 @@ export default function DisciplinasDemo() {
 
   useEffect(() => {
     getDisciplinas();
-    user.id;
+    console.log(disciplinas);
+    user.username;
   }, []);
 
   const onGlobalFilterChange = (event) => {

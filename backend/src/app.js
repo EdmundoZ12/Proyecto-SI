@@ -17,6 +17,13 @@ const horario = require('./routes/horario.routes');
 const disciplina = require('./routes/disciplina.routes');
 const entrenadores = require('./routes/entrenador.routes');
 
+const clienteRoute = require('./routes/cliente.routes');
+const membresiaRoute = require('./routes/membresia.routes');
+const bitacoraRoute = require('./routes/bitacora.routes');
+
+
+
+
 const app = express()
 
 // app.use(cors({
@@ -46,6 +53,13 @@ app.use('/api', proveedorRoute);
 app.use('/api', inventarioRoute);
 app.use('/api', productoRoute);
 app.use('/api', categoriaRoute);
+
+app.use('/api', clienteRoute);
+app.use('/api', membresiaRoute);
+app.use('/api', bitacoraRoute);
+
+
+
 
 
 module.exports = app;

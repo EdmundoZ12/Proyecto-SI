@@ -45,8 +45,8 @@ export default function RolesDemo() {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-  const { createRol, updateRol, getRol, roles, getRoles, deleteRol } =
-    useRoles();
+  const { createRol, updateRol, getRol, roles, getRoles, deleteRol } = useRoles();
+  
   const navigate = useNavigate();
   const params = useParams();
 

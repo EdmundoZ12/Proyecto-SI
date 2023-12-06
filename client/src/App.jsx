@@ -36,8 +36,16 @@ import { HorarioProvider } from "./context/horarioContext";
 import HorariosDemo from "./pages/HorarioPage";
 import { DisciplinaProvider } from "./context/disciplinaContext";
 import DisciplinasDemo from "./pages/DisciplinasPage";
+
 import { EntrenadorProvider } from "./context/entrenadorContext";
 import EntrenadoresDemo from "./pages/EntrenadoresPage";
+
+import { MembresiaProvider } from "./context/membresiaContext";
+import  MembresiaDemo  from "./pages/membresiaComponent";
+
+import  BitacoraDemo  from "./pages/bitacoraPage";
+
+
 
 function App() {
   return (
@@ -54,86 +62,96 @@ function App() {
                         <HorarioProvider>
                           <DisciplinaProvider>
                             <EntrenadorProvider>
-                              <BrowserRouter>
-                                <Routes>
-                                  <Route
-                                    path="/login"
-                                    element={<LoginPage />}
-                                  />
-                                  <Route path="/" element={<Page />} />
+                              <MembresiaProvider>
+                                <BrowserRouter>
+                                  <Routes>
+                                    <Route
+                                      path="/login"
+                                      element={<LoginPage />}
+                                    />
+                                    <Route path="/" element={<Page />} />
 
-                                  <Route element={<ProtectedRoute />}>
-                                    <Route
-                                      path="/products"
-                                      element={<ProductsDemo />}
-                                    />
-                                    <Route
-                                      path="/funcionalidades"
-                                      element={<FuncionalidadesDemo />}
-                                    />
-                                    <Route
-                                      path="/categorias"
-                                      element={<CategoriassDemo />}
-                                    />
-                                    <Route
-                                      path="/proveedores"
-                                      element={<ProveedoresDemo />}
-                                    />
-                                    <Route
-                                      path="/roles"
-                                      element={<RolesDemo />}
-                                    />
-                                    <Route
-                                      path="/users"
-                                      element={<UsersDemo />}
-                                    />
-                                    <Route
-                                      path="/home"
-                                      element={<SideBarPage />}
-                                    />
-                                    <Route
-                                      path="/producto"
-                                      element={<ProductoComponent />}
-                                    />
-                                    <Route
-                                      path="/productos"
-                                      element={<ProductosDemo />}
-                                    />
-                                    <Route
-                                      path="/categoria"
-                                      element={<CategoriaComponent />}
-                                    />
-                                    <Route
-                                      path="/proveedor"
-                                      element={<ProveedorComponent />}
-                                    />
-                                    <Route
-                                      path="/horario"
-                                      element={<HorariosDemo />}
-                                    />
-                                    <Route
-                                      path="/disciplinas"
-                                      element={<DisciplinasDemo />}
-                                    />
-                                    <Route
-                                      path="/inventario"
-                                      element={<InventarioComponent />}
-                                    />
-                                    <Route
-                                      path="/entrenador"
-                                      element={<EntrenadoresDemo />}
-                                    />
-                                    <Route
-                                      path="/inventarios"
-                                      element={<InventariosDemo />}
-                                    />
-                                    <Route
-                                      path="/nota-de-entrada"
-                                      element={<Nota_EntradasDemo />}
-                                    />
-                                  </Route>
-                                </Routes>
-                              </BrowserRouter>
+                                    <Route element={<ProtectedRoute />}>
+                                      <Route
+                                        path="/products"
+                                        element={<ProductsDemo />}
+                                      />
+                                      <Route
+                                        path="/funcionalidades"
+                                        element={<FuncionalidadesDemo />}
+                                      />
+                                      <Route
+                                        path="/categorias"
+                                        element={<CategoriassDemo />}
+                                      />
+                                      <Route
+                                        path="/proveedores"
+                                        element={<ProveedoresDemo />}
+                                      />
+                                      <Route
+                                        path="/roles"
+                                        element={<RolesDemo />}
+                                      />
+                                      <Route
+                                        path="/users"
+                                        element={<UsersDemo />}
+                                      />
+                                      <Route
+                                        path="/home"
+                                        element={<SideBarPage />}
+                                      />
+                                      <Route
+                                        path="/producto"
+                                        element={<ProductoComponent />}
+                                      />
+                                      <Route
+                                        path="/productos"
+                                        element={<ProductosDemo />}
+                                      />
+                                      <Route
+                                        path="/categoria"
+                                        element={<CategoriaComponent />}
+                                      />
+                                      <Route
+                                        path="/proveedor"
+                                        element={<ProveedorComponent />}
+                                      />
+                                      <Route
+                                        path="/horario"
+                                        element={<HorariosDemo />}
+                                      />
+                                      <Route
+                                        path="/disciplinas"
+                                        element={<DisciplinasDemo />}
+                                      />
+                                      <Route
+                                        path="/inventario"
+                                        element={<InventarioComponent />}
+                                      />
+                                      <Route
+                                        path="/entrenador"
+                                        element={<EntrenadoresDemo />}
+                                      />
+                                      <Route
+                                        path="/inventarios"
+                                        element={<InventariosDemo />}
+                                      />
+                                      <Route
+                                        path="/nota-de-entrada"
+                                        element={<Nota_EntradasDemo />}
+                                      />
+                                      <Route
+                                        path="/membresia"
+                                        element={<MembresiaDemo />}
+                                      />
+                                      <Route
+                                        path="/bitacora"
+                                        element={<BitacoraDemo />}
+                                      />
+                                    </Route>
+                                  </Routes>
+                                </BrowserRouter>
+                              </MembresiaProvider>
                             </EntrenadorProvider>
                           </DisciplinaProvider>
                         </HorarioProvider>

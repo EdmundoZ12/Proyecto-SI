@@ -22,7 +22,9 @@ export function EntrenadorProvider({ children }) {
   const getEntrenadores = async () => {
     try {
       const res = await getEntrenadoresRequest();
+
       setEntrenadores(res.data);
+      console.log("entrenadoresss"+res.data);
     } catch (error) {
       console.error(error);
     }

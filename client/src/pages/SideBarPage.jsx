@@ -89,8 +89,8 @@ export default function SideBarPage() {
           icon: "pi pi-fw pi-plus",
         },
         {
-          label: "Center",
-          icon: "pi pi-fw pi-align-center",
+          label: <Link to="/membresia">Membresia</Link>,
+          icon: "pi pi-fw pi-plus",
         },
         {
           label: "Justify",
@@ -103,7 +103,7 @@ export default function SideBarPage() {
       icon: "pi pi-fw pi-calendar",
       items: [
         {
-          label: "Edit",
+          label: <Link to="/bitacora">Bitacora</Link>,
           icon: "pi pi-fw pi-pencil",
           items: [
             {
