@@ -179,10 +179,10 @@ const updatePersonAndUser = async (req, res) => {
         WHERE Id_Persona = $6
         RETURNING Username, Direccion, Activo;
       `;
-
+      const passwordhash = await bcrypt.hash(password, 10);
     const usuarioUpdateResult = await client.query(usuarioUpdateQuery, [
       username,
-      password,
+      passwordhash,
       id_rol,
       direccion,
       activo,
@@ -197,6 +197,7 @@ const updatePersonAndUser = async (req, res) => {
 
     // Confirma la transacción
     await client.query("COMMIT");
+
 
     // Envía la respuesta con los datos actualizados
     res.json(usuarioUpdateResult.rows[0]);
