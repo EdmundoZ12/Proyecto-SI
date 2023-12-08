@@ -1,8 +1,13 @@
+const { json } = require("express");
 const pool = require("../db");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { createAccessToken } = require("../libs/jwt");
+const { TOKEN_SECRET } = require("../config");
 
 const getFuncionalidades = async (req, res, next) => {
   try {
-    const Id_User=req.user.id;
+    const Id_User = req.user.id;
     const allFunts = await pool.query("SELECT * FROM funcionalidad");
     res.json(allFunts.rows);
   } catch (error) {
@@ -13,9 +18,14 @@ const getFuncionalidades = async (req, res, next) => {
 const getFuncionalidad = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const Funcionalidad = await pool.query("SELECT * FROM funcionalidad WHERE id=$1", [id]);
+    const Funcionalidad = await pool.query(
+      "SELECT * FROM funcionalidad WHERE id=$1",
+      [id]
+    );
     if (Funcionalidad.rows.length === 0) {
-      return res.status(404).json({ mensaje: "La Funcionalidad no fue encontrada." });
+      return res
+        .status(404)
+        .json({ mensaje: "La Funcionalidad no fue encontrada." });
     }
 
     res.json(Funcionalidad.rows[0]);
@@ -25,7 +35,7 @@ const getFuncionalidad = async (req, res, next) => {
 };
 
 const createFuncionalidad = async (req, res, next) => {
-  const { nombre, descripcion,activo } = req.body;
+  const { nombre, descripcion, activo } = req.body;
   try {
     //const Id_User=req.user.id;
     const existingFunc = await pool.query(
@@ -35,8 +45,24 @@ const createFuncionalidad = async (req, res, next) => {
     if (existingFunc.rowCount === 0) {
       const result = await pool.query(
         "INSERT INTO funcionalidad (nombre, descripcion,activo) VALUES ($1, $2,$3) RETURNING *",
-        [nombre, descripcion,activo]
+        [nombre, descripcion, activo]
       );
+
+      // bitacora
+      const fechaActual = new Date();
+      const fechaFormateada = fechaActual.toISOString();
+      const { token } = req.cookies;
+      const accion = `creo la funcionalidad con ID = ${result.rows[0].id}`;
+
+      if (token) {
+        console.log("entro");
+        const decodedToken = jwt.verify(token, TOKEN_SECRET);
+        await pool.query(
+          "INSERT INTO Bitacora (Fecha_Hora, Id_Usuario,accion) VALUES ($1, $2, $3)",
+          [fechaFormateada, decodedToken.id, accion]
+        );
+      }
+      // bitacora
       res.json(result.rows[0]);
     } else {
       res
@@ -49,16 +75,18 @@ const createFuncionalidad = async (req, res, next) => {
   }
 };
 
-const deleteFuncionalidad= async (req, res, next) => {
+const deleteFuncionalidad = async (req, res, next) => {
   try {
-    const  id  = req.params.id;
-    
+    const id = req.params.id;
+
     const deleteF = await pool.query("DELETE FROM funcionalidad WHERE id=$1", [
       //DELETE FROM task WHERE id=$1 RETURNING *
       id,
     ]);
     if (deleteF.rowCount === 0) {
-      return res.status(404).json({ mensaje: "La Funcionalidad no fue encontrada." });
+      return res
+        .status(404)
+        .json({ mensaje: "La Funcionalidad no fue encontrada." });
     }
 
     return res.sendStatus(204);
@@ -68,17 +96,19 @@ const deleteFuncionalidad= async (req, res, next) => {
   }
 };
 
-const updateFuncionalidad = async(req, res, next) => {
+const updateFuncionalidad = async (req, res, next) => {
   try {
-    const id=req.params.id;
-    const { nombre, descripcion ,activo} = req.body;
+    const id = req.params.id;
+    const { nombre, descripcion, activo } = req.body;
 
     const result = await pool.query(
       "UPDATE funcionalidad SET nombre=$1 , descripcion=$2 , activo=$3 WHERE id=$4 RETURNING*",
-      [nombre, descripcion,activo,id]
+      [nombre, descripcion, activo, id]
     );
     if (result.rows.length === 0) {
-      return res.status(404).json({ mensaje: "La Funcionalidad no fue encontrada." });
+      return res
+        .status(404)
+        .json({ mensaje: "La Funcionalidad no fue encontrada." });
     }
 
     res.json(result.rows[0]);
@@ -88,9 +118,9 @@ const updateFuncionalidad = async(req, res, next) => {
 };
 
 module.exports = {
-getFuncionalidad,
-getFuncionalidades,
-createFuncionalidad,
-deleteFuncionalidad,
-updateFuncionalidad
+  getFuncionalidad,
+  getFuncionalidades,
+  createFuncionalidad,
+  deleteFuncionalidad,
+  updateFuncionalidad,
 };

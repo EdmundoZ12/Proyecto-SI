@@ -39,7 +39,7 @@ export default function ProveedoresDemo() {
     getProveedor,
     getProveedores,
     proveedores,
-    deleteProveedor
+    deleteProveedor,
   } = useProveedores();
 
   const [products, setProducts] = useState(null);
@@ -165,7 +165,7 @@ export default function ProveedoresDemo() {
 
   const editProduct = (proveedor) => {
     console.log("editProduct llamado");
-    setProduct({ ...proveedor});
+    setProduct({ ...proveedor });
     setProductDialog(true); // Muestra el diálogo de edición
   };
   const confirmDeleteProduct = (product) => {
@@ -226,13 +226,6 @@ export default function ProveedoresDemo() {
           severity="success"
           onClick={openNew}
         />
-        <Button
-          label="Delete"
-          icon="pi pi-trash"
-          severity="danger"
-          onClick={confirmDeleteSelected}
-          disabled={!selectedProducts || !selectedProducts.length}
-        />
       </div>
     );
   };
@@ -258,13 +251,13 @@ export default function ProveedoresDemo() {
           className="mr-2"
           onClick={() => editProduct(rowData)}
         />
-        <Button
+        {/* <Button
           icon="pi pi-trash"
           rounded
           outlined
           severity="danger"
           onClick={() => confirmDeleteProduct(rowData)}
-        />
+        /> */}
       </React.Fragment>
     );
   };
@@ -343,8 +336,6 @@ export default function ProveedoresDemo() {
           filters={filters}
           header={renderHeader}
         >
-          <Column selectionMode="multiple" exportable={false}></Column>
-
           <Column
             field="empresa"
             header="Empresa"
@@ -385,7 +376,9 @@ export default function ProveedoresDemo() {
             onChange={(e) => onInputChange(e, "empresa")}
             required
             autoFocus
-            className={classNames({ "p-invalid": submitted && !product.empresa })}
+            className={classNames({
+              "p-invalid": submitted && !product.empresa,
+            })}
           />
           {submitted && !product.empresa && (
             <small className="p-error">Name Empresa is required.</small>

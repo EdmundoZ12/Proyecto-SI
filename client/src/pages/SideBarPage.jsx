@@ -3,16 +3,20 @@ import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { PanelMenu } from "primereact/panelmenu";
 import { Link } from "react-router-dom";
+import logo from "../assets/Borcelle.png"
+import { useAuth } from "../context/authContext";
+
 
 export default function SideBarPage() {
   const [visible, setVisible] = useState(false);
+  const { isAuthenticated, logout, user } = useAuth();
   const items = [
     {
-      label: "Users",
+      label: "Gestion de Usuario",
       icon: "pi pi-fw pi-user",
       items: [
         {
-          label: <Link to="/users">New User</Link>,
+          label: <Link to="/users">Usuario</Link>,
           icon: "pi pi-fw pi-user-plus",
           style: {
             backgroundColor: 'var(--bluegray-400)', // Estilo de fondo
@@ -21,7 +25,7 @@ export default function SideBarPage() {
           },
         },
         {
-          label: <Link to="/funcionalidades">New Functionality</Link>,
+          label: <Link to="/funcionalidades">Funcionalidad</Link>,
           icon: "pi pi-fw pi-user-plus",
           style: {
             backgroundColor: 'var(--bluegray-400)', // Estilo de fondo
@@ -30,7 +34,7 @@ export default function SideBarPage() {
           },
         },
         {
-          label: <Link to="/roles">New Rol</Link>,
+          label: <Link to="/roles">Rol</Link>,
           icon: "pi pi-fw pi-user-plus",
           style: {
             backgroundColor: 'var(--bluegray-400)', // Estilo de fondo
@@ -42,7 +46,7 @@ export default function SideBarPage() {
       ],
     },
     {
-      label: "Products",
+      label: "Gestion de producto",
       icon: "pi pi-fw pi-cart-plus",
       items: [
         {
@@ -58,23 +62,22 @@ export default function SideBarPage() {
           icon: "pi pi-fw pi-plus",
         },
         {
-          label: <Link to="/inventario">Inventario</Link>,
+          label: <Link to="/inventarios">Inventario</Link>,
           icon: "pi pi-fw pi-plus",
         },
-        {
-          label: <Link to="/inventarios">Inventario2</Link>,
-          icon: "pi pi-fw pi-plus",
-        },
-        ,
         {
           label: <Link to="/nota-de-entrada">Nota de Entrada</Link>,
+          icon: "pi pi-fw pi-plus",
+        },
+        {
+          label: <Link to="/facturas">Factura</Link>,
           icon: "pi pi-fw pi-plus",
         },
       ],
     },
     {
-      label: "Membresias",
-      icon: "pi pi-fw pi-pencil",
+      label: "Gestion de Membresias",
+      icon: "pi pi-fw pi-bolt",
       items: [
         {
           label: <Link to="/disciplinas">Disciplinas</Link>,
@@ -87,53 +90,56 @@ export default function SideBarPage() {
         {
           label: <Link to="/entrenador">Entrenadores</Link>,
           icon: "pi pi-fw pi-plus",
+        },{
+          label: <Link to="/cliente">Cliente</Link>,
+          icon: "pi pi-fw pi-plus",
         },
         {
+          label: <Link to="/membresia">Membresia</Link>,
+          icon: "pi pi-fw pi-plus",
+        },
+        
+        /*{
           label: "Center",
           icon: "pi pi-fw pi-align-center",
         },
         {
           label: "Justify",
           icon: "pi pi-fw pi-align-justify",
-        },
+        },*/
       ],
     },
     {
-      label: "Events",
-      icon: "pi pi-fw pi-calendar",
+      label: "Reportes",
+      icon: "pi pi-fw pi-chart-bar",
       items: [
         {
-          label: "Edit",
-          icon: "pi pi-fw pi-pencil",
-          items: [
-            {
-              label: "Save",
-              icon: "pi pi-fw pi-calendar-plus",
-            },
-            {
-              label: "Delete",
-              icon: "pi pi-fw pi-calendar-minus",
-            },
-          ],
+          label: <Link to="/reporteentrada">Nota De Entrada</Link>,
+          icon: "pi pi-fw pi-plus",
         },
         {
-          label: "Archive",
-          icon: "pi pi-fw pi-calendar-times",
-          items: [
-            {
-              label: "Remove",
-              icon: "pi pi-fw pi-calendar-minus",
-            },
-          ],
+          label: <Link to="/reportefactura">Facturas</Link>,
+          icon: "pi pi-fw pi-plus",
+        },
+        {
+          label: <Link to="/reporteclimem">Membresias</Link>,
+          icon: "pi pi-fw pi-plus",
+        },
+        {
+          label: <Link to="/bitacora">Bitacora</Link>,
+          icon: "pi pi-fw pi-plus",
         },
       ],
-    },
+    }
   ];
+  const sidebar={
+    backgroundColor: '#151623',
+  }
 
   return (
-    <div className="card flex justify-content-between bg-orange-200 ">
+    <div className="card flex justify-content-between " style={sidebar}>
       <Sidebar
-        className="bg-orange-300"
+       style={sidebar}
         visible={visible}
         onHide={() => setVisible(false)}
       >
@@ -145,7 +151,7 @@ export default function SideBarPage() {
           }}
         >
           <img
-            src="https://static.vecteezy.com/system/resources/previews/006/406/317/non_2x/fitness-and-training-icons-gym-and-workout-vector.jpg"
+            src={logo}
             style={{
               width: "50%",
               borderRadius: "50%", // Imagen circular
@@ -168,8 +174,14 @@ export default function SideBarPage() {
         className="bg-black-alpha-90"
       />
       <div className="flex align-items-center">
-        <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem" }}></i>
-        <i className="pi pi-spin pi-cog" style={{ fontSize: "2rem" }}></i>
+      {/* <i style={{ color: "white", fontWeight: "bold" ,fontSize:"25px",marginRight:"20px"}}>Welcome {user.username}</i> */}
+        <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem",marginRight:"20px" }}></i>
+        <i className="pi pi-spin pi-cog" style={{ fontSize: "2rem",marginRight:"20px" }}></i>
+        <i style={{ fontSize: "2rem" ,background:"orange",borderRadius:"10px",}} >
+              <Link to="/" onClick={() => logout()} style={{ fontSize: "2rem" }}>
+                Logout
+              </Link>
+            </i>
       </div>
     </div>
   );

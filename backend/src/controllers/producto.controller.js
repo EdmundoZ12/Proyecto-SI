@@ -1,5 +1,8 @@
 const pool = require("../db");
-
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { createAccessToken } = require("../libs/jwt");
+const { TOKEN_SECRET } = require("../config");
 // tabla global a usar
 const tabla = "producto";
 
@@ -45,12 +48,12 @@ const createProducto = async (req, res) => {
         .json({ error: "Todos los campos son obligatorios." });
     }
 
-    const existingProvider = await pool.query(
-      `SELECT * FROM ${tabla} WHERE nombre = $1`,
+    const existingProduct = await pool.query(
+      "SELECT * FROM producto WHERE nombre = $1",
       [nombre]
     );
 
-    if (existingProvider.rowCount > 0) {
+    if (existingProduct.rowCount > 0) {
       return res.status(400).json({ error: "El producto ya existe." });
     }
 
@@ -58,25 +61,39 @@ const createProducto = async (req, res) => {
     try {
       await client.query("BEGIN");
 
-      // Insertar el proveedor
       const insertResult = await client.query(
         "INSERT INTO producto (nombre, descripcion, precio, id_categoria) VALUES ($1, $2, $3, $4) RETURNING *",
         [nombre, descripcion, precio, id_categoria]
       );
 
-      // Confirmar la transacción
       await client.query("COMMIT");
 
-      // Devolver el resultado
+      // bitacora
+      const fechaActual = new Date();
+      const fechaFormateada = fechaActual.toISOString();
+      const { token } = req.cookies;
+      const accion = `creo EL PRODUCTO con ID = ${insertResult.rows[0].cod}`;
+
+      if (token) {
+        console.log("entro");
+        const decodedToken = jwt.verify(token, TOKEN_SECRET);
+        const a = await pool.query(
+          "INSERT INTO Bitacora (Fecha_Hora, Id_Usuario,accion) VALUES ($1, $2, $3)",
+          [fechaFormateada, decodedToken.id, accion]
+        );
+      }
+      // bitacora
       res.json(insertResult.rows[0]);
     } catch (error) {
       await client.query("ROLLBACK");
-      throw error;
+      // Manejar errores específicos aquí según tus necesidades
+      res.status(500).json({ error: "Error en la creación del producto." });
     } finally {
       client.release();
     }
   } catch (error) {
-    res.json(error);
+    // Manejar errores específicos aquí según tus necesidades
+    res.status(500).json({ error: "Error en la creación del producto." });
   }
 };
 

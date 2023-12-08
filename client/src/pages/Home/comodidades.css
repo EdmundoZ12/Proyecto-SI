@@ -1,0 +1,106 @@
+.comodidades{
+    max-width: 1100px;
+    margin: auto;
+    background-color: #dde1e9;
+    padding: 100px 20px;
+}
+.comodidades .fila{
+    display: flex;
+    align-items: center;
+}
+.comodidades .fila .col{
+    width: 50%;
+}
+.comodidades .fila .col img{
+    width: 80%;
+    display: block;
+    margin: auto;
+    margin-bottom: 50px;
+}
+.comodidades .fila .col .contenedor-titulo{
+    display: flex;
+    align-items:center
+}
+.comodidades .fila .col .contenedor-titulo .numero{
+    color: #ff1133;
+    font-weight: bold;
+    display: block;
+    font-size: 5rem;
+}
+.comodidades .fila .col .contenedor-titulo .info{
+    margin-left: 30px;
+}
+.comodidades .fila .col .contenedor-titulo .info .frase{
+    color: #ff1133;
+}
+.comodidades .fila .col .contenedor-titulo .info h2{
+    font-size: 3rem;
+}
+.comodidades .fila .col p{
+   margin-bottom: 10px;
+   line-height: 28px;
+}
+.comodidades .fila .col .p-especial{
+    font-weight: bold;
+}
+.comodidades .fila .col li{
+    margin-bottom: 20px;
+    color: #1f283e;
+}
+.comodidades .fila .col li span{
+    font-weight: bold;
+    color: #ff1133;
+}
+@media only screen and (max-width: 900px) {
+
+    .comodidades .fila{
+        display: block;
+    }
+    .comodidades .fila .col{
+        width: 100%;
+    }
+    .comodidades .fila .col img{
+        max-width: 200px;
+    }
+
+}
+@media only screen and (max-width: 412px) {
+    .comodidades .fila{
+        display: block;
+    }
+    .comodidades .fila .col{
+        width: 100%;
+    }
+    .comodidades .fila .col img{
+        max-width: 200px;
+    }
+    .comodidades .fila .col .contenedor-titulo{
+        display: block;
+    }
+    .comodidades .fila .col .contenedor-titulo .numero{
+        font-size: 5rem;
+    }
+    .comodidades .fila .col .contenedor-titulo .info h2{
+        font-size: 2rem;
+    }
+}
+@media only screen and (max-width: 430px) {
+    .comodidades .fila{
+        display: block;
+    }
+    .comodidades .fila .col{
+        width: 100%;
+    }
+    .comodidades .fila .col img{
+        max-width: 200px;
+    }
+    .comodidades .fila .col .contenedor-titulo{
+        display: block;
+    }
+    .comodidades .fila .col .contenedor-titulo .numero{
+        font-size: 5rem;
+    }
+    .comodidades .fila .col .contenedor-titulo .info h2{
+        font-size: 2rem;
+    }
+}

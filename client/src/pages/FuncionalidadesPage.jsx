@@ -229,13 +229,6 @@ export default function FuncionalidadesDemo() {
           severity="success"
           onClick={openNew}
         />
-        <Button
-          label="Delete"
-          icon="pi pi-trash"
-          severity="danger"
-          onClick={confirmDeleteSelected}
-          disabled={!selectedProducts || !selectedProducts.length}
-        />
       </div>
     );
   };
@@ -261,13 +254,13 @@ export default function FuncionalidadesDemo() {
           className="mr-2"
           onClick={() => editProduct(rowData)}
         />
-        <Button
+        {/* <Button
           icon="pi pi-trash"
           rounded
           outlined
           severity="danger"
           onClick={() => confirmDeleteProduct(rowData)}
-        />
+        /> */}
       </React.Fragment>
     );
   };
@@ -346,7 +339,6 @@ export default function FuncionalidadesDemo() {
           filters={filters}
           header={renderHeader}
         >
-          <Column selectionMode="multiple" exportable={false}></Column>
 
           <Column
             field="nombre"

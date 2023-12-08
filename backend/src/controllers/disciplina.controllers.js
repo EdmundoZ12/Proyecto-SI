@@ -1,5 +1,8 @@
 const pool = require("../db");
 
+const { TOKEN_SECRET } = require("../config");
+const jwt = require("jsonwebtoken");
+
 const getDisciplinas = async (req, res, next) => {
   try {
     const disciplinas = await pool.query(`SELECT
@@ -91,14 +94,21 @@ const createDisciplina = async (req, res, next) => {
       [cod, nombre, descripcion, precio, activo]
     );
 
-    /* const idNuevaDisciplina = nuevaDisciplina.rows[0].cod;
+    // bitacora
+    const fechaActual = new Date();
+    const fechaFormateada = fechaActual.toISOString();
+    const { token } = req.cookies;
+    const accion = `creo la disciplina con ID = ${nuevaDisciplina.rows[0].cod}`;
 
-    for (const horario of horarios) {
+    if (token) {
+      console.log("entro");
+      const decodedToken = jwt.verify(token, TOKEN_SECRET);
       await pool.query(
-        "INSERT INTO Disciplina_Horario (cod_disciplina, id_horario) VALUES ($1, $2)",
-        [idNuevaDisciplina, horario.id_horario]
+        "INSERT INTO Bitacora (Fecha_Hora, Id_Usuario,accion) VALUES ($1, $2, $3)",
+        [fechaFormateada, decodedToken.id, accion]
       );
-    }*/
+    }
+    // bitacora
 
     return res.status(201).json({ success: "Disciplina creada exitosamente." });
   } catch (error) {
@@ -110,11 +120,11 @@ const createDisciplina = async (req, res, next) => {
 const updateDisciplina = async (req, res, next) => {
   try {
     const cod = req.params.cod;
-    const {  nombre, descripcion, precio, activo } = req.body;
+    const { nombre, descripcion, precio, activo } = req.body;
 
     const result = await pool.query(
       "UPDATE Disciplina SET NOMBRE = $1, DESCRIPCION = $2, PRECIO = $3,ACTIVO=$4 WHERE cod = $5 RETURNING *",
-      [nombre, descripcion, precio,activo, cod]
+      [nombre, descripcion, precio, activo, cod]
     );
 
     if (result.rows.length === 0) {
@@ -122,6 +132,22 @@ const updateDisciplina = async (req, res, next) => {
         .status(404)
         .json({ mensaje: "La Disciplina no fue encontrada." });
     }
+
+    // bitacora
+    const fechaActual = new Date();
+    const fechaFormateada = fechaActual.toISOString();
+    const { token } = req.cookies;
+    const accion = `actualizo la disciplina con ID = ${cod}`;
+
+    if (token) {
+      console.log("entro");
+      const decodedToken = jwt.verify(token, TOKEN_SECRET);
+      await pool.query(
+        "INSERT INTO Bitacora (Fecha_Hora, Id_Usuario,accion) VALUES ($1, $2, $3)",
+        [fechaFormateada, decodedToken.id, accion]
+      );
+    }
+    // bitacora
 
     res.json(result.rows[0]);
   } catch (error) {

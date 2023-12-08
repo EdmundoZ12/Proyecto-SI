@@ -6,7 +6,7 @@ const { createAccessToken } = require("../libs/jwt");
 
 const CreateEntrenador = async (req, res) => {
   //insertar datos
-  console.log(req.body)
+  console.log(req.body);
   const { id_usuario, cod_disciplina, horarios } = req.body;
   try {
     // Verificar si ya existe una tarea con el mismo título
@@ -17,11 +17,11 @@ const CreateEntrenador = async (req, res) => {
       WHERE ID_ENTRENADOR=$1 AND COD_DISCIPLINA=$2`,
       [id_usuario, cod_disciplina]
     );
-    console.log(existingPersona)
+    console.log(existingPersona);
 
     if (existingPersona.rowCount === 0) {
       // Si no existe, insertar usuario y persona
-      
+
       const disciplina = await pool.query(
         "INSERT INTO ENTRENADOR_DISCIPLINA (ID_ENTRENADOR,COD_DISCIPLINA) VALUES ($1,$2) RETURNING *",
         [id_usuario, cod_disciplina]
@@ -35,6 +35,21 @@ const CreateEntrenador = async (req, res) => {
           [idNuevaDisciplina, horario.id_horario]
         );
       }
+      // bitacora
+      const fechaActual = new Date();
+      const fechaFormateada = fechaActual.toISOString();
+      const { token } = req.cookies;
+      const accion = `unio la disciplina ID = ${cod_disciplina} y entrenador ID = ${id_usuario}`;
+
+      if (token) {
+        console.log("entro");
+        const decodedToken = jwt.verify(token, TOKEN_SECRET);
+        await pool.query(
+          "INSERT INTO Bitacora (Fecha_Hora, Id_Usuario,accion) VALUES ($1, $2, $3)",
+          [fechaFormateada, decodedToken.id, accion]
+        );
+      }
+      // bitacora
 
       return res
         .status(201)
@@ -81,14 +96,16 @@ const getEntrenadores = async (req, res, next) => {
   }
 };
 
-const getSoloEntrenadores=async(req,res)=>{
+const getSoloEntrenadores = async (req, res) => {
   try {
-    const value = await pool.query("SELECT Persona.Id,Persona.nombre FROM PERSONA,USUARIO,ROL WHERE PERSONA.ID=USUARIO.ID_PERSONA AND USUARIO.ID_ROL=ROL.ID AND ROL.NOMBRE='ENTRENADOR'");
+    const value = await pool.query(
+      "SELECT Persona.Id,Persona.nombre FROM PERSONA,USUARIO,ROL WHERE PERSONA.ID=USUARIO.ID_PERSONA AND USUARIO.ID_ROL=ROL.ID AND ROL.NOMBRE='ENTRENADOR'"
+    );
     res.json(value.rows);
-} catch (error) {
+  } catch (error) {
     res.json(error);
-}
-}
+  }
+};
 
 const getEntrenador = async (req, res) => {
   const ID_ENTRENADOR = req.params.id;
@@ -191,5 +208,5 @@ module.exports = {
   updateEntrenador,
   getEntrenadores,
   getEntrenador,
-  getSoloEntrenadores
+  getSoloEntrenadores,
 };

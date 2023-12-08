@@ -16,7 +16,12 @@ const nota_de_entradaRoute = require('./routes/nota_de_entrada.routes');
 const horario = require('./routes/horario.routes');
 const disciplina = require('./routes/disciplina.routes');
 const entrenadores = require('./routes/entrenador.routes');
-
+const clienteRoute = require('./routes/cliente.routes');
+const clienteRoute2 = require('./routes/clientes.routes');
+const MembresiaRoute = require('./routes/membresia.routes');
+const BitacoraRoute=require('./routes/bitacora.routes');
+const ReportesRoute=require('./routes/reporte.routes');
+const FacturasRoute=require('./routes/factura.routes');
 const app=express()
 
 app.use(cors({
@@ -29,7 +34,10 @@ app.use(express.json( ))
 app.use(cookieParser());
 
 app.use('/api',authRoutes)
+app.use('/api',ReportesRoute)
+app.use('/api',FacturasRoute)
 app.use('/api',nota_de_entradaRoute)
+app.use('/api',BitacoraRoute)
 app.use('/api',entrenadores)
 app.use('/api',disciplina)
 app.use('/api',rolesRoutes)
@@ -41,6 +49,9 @@ app.use('/api', proveedorRoute);
 app.use('/api', inventarioRoute);
 app.use('/api', productoRoute);
 app.use('/api', categoriaRoute);
+app.use('/cliente', clienteRoute);
+app.use('/api', clienteRoute2);
+app.use('/membresia', MembresiaRoute);
 
 
 module.exports=app;

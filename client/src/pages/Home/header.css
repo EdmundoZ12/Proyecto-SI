@@ -1,0 +1,140 @@
+.contenedor-header{
+    width: 100%;
+    position: fixed;
+    border-bottom: 1px solid #1f283e;
+    background-color: rgba(0,0,0,.7);
+    z-index: 99;
+    padding: 0 20px;
+}
+.contenedor-header header{
+    max-width: 1100px;
+    margin: auto;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    color: #fff;
+}
+header .login{
+    color: white;
+}
+.txtRojo{
+    color:#ff1133;
+}
+.contenedor-header header nav a{
+    display: inline-block;
+    text-decoration: none;
+    color: #fff;
+    padding: 5px;
+    text-transform: uppercase;
+}
+.contenedor-header header nav a:hover{
+    color: #ff1133;
+}
+.contenedor-header header .redes a{
+    text-decoration: none;
+    color: #fff;
+    display: inline-block;
+    padding: 5px 8px;
+    font-size: 2rem;
+}
+.contenedor-header header .redes a:hover{
+    color: #ff1133;
+}
+.nav-responsive{
+    display: none;
+    font-size: 25px;
+ }
+@media only screen and (max-width: 900px) {
+    header nav{
+        position: initial;
+        display: none;
+        transform: translate(0);
+    }
+    header .redes{
+        display: none;
+    }
+    .nav-responsive{
+        display: block;
+    }
+    nav.responsive{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position:absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        background-color:#151623;
+        z-index: 99;
+    }
+    nav.responsive a{
+        display: block;
+        width: fit-content;
+        margin: 10px auto;
+        font-size: 30px;
+    }}
+
+    @media only screen and (max-width: 430px) {
+        .contenedor-header header{
+            max-width: 1100px;
+            margin: auto;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px 0;
+            color: #fff; 
+        }
+        .contenedor-header{
+            width: 95%;
+            position: fixed;
+            border-bottom: 1px solid #1f283e;
+            background-color: rgba(0,0,0,.7);
+            z-index: 99;
+            padding: 0 20px;
+        }
+    }
+        @media only screen and (max-width: 412px) {
+            .contenedor-header header{
+                max-width: 1100px;
+                margin: auto;
+                width: 100%;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                padding: 20px 0;
+                color: #fff; 
+            }
+            .contenedor-header{
+                width: 96%;
+                position: fixed;
+                border-bottom: 1px solid #1f283e;
+                background-color: rgba(0,0,0,.7);
+                z-index: 99;
+                padding: 0 20px;
+            }
+        }
+        @media only screen and (max-width: 360px) {
+            .contenedor-header header{
+                max-width: 1100px;
+                margin: auto;
+                width: 100%;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                padding: 20px 0;
+                color: #fff; 
+            }
+            .contenedor-header{
+                width: 94%;
+                position: fixed;
+                border-bottom: 1px solid #1f283e;
+                background-color: rgba(0,0,0,.7);
+                z-index: 99;
+                padding: 0 20px;
+            }
+
+        }

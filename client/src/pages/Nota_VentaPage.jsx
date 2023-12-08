@@ -21,6 +21,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Dropdown } from "primereact/dropdown";
 import { useProveedores } from "../context/proveedorContext";
 import { useAuth } from "../context/authContext";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+import logo from "../images/Logo.jpeg";
+import { Chart } from "primereact/chart";
+import "primereact/resources/themes/saga-blue/theme.css";
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 
 export default function Nota_EntradasDemo() {
   const {
@@ -115,6 +122,41 @@ export default function Nota_EntradasDemo() {
     setProductosEntrada([...productosEntrada, nuevoProducto]);
     setEntrada(emptyEntrada);
   };
+
+  const imprimir = () => {
+    const doc = new jsPDF();
+    const columns = ["Productos", "Cantidad", "Precio", "Total"];
+    const data = [];
+
+    var monto = 0;
+    for (let i = 0; i < productosAsociados.length - 1; i++) {
+      var dato = [
+        `${productosAsociados[i].nombre}`,
+        `${productosAsociados[i].cantidad}`,
+        `${productosAsociados[i].precio}`,
+        `${productosAsociados[i].cantidad * productosAsociados[i].precio}`,
+      ];
+      data.push(dato);
+      monto =
+        monto + productosAsociados[i].cantidad * productosAsociados[i].precio;
+    }
+    data.push(["Monto Total", "", "", `${monto}`]);
+    const empresa = productosAsociados[productosAsociados.length - 1];
+    const fecha = productosAsociados[0].fecha;
+    console.log(fecha);
+    doc.text("Nota de entrada", 95, 20);
+    doc.text(`EMPRESA: ${empresa}`, 10, 80);
+    doc.text(`FECHA EMITIDA: ${fecha}`, 10, 100);
+
+    doc.autoTable({
+      startY: 30,
+      head: [columns],
+      body: data,
+    });
+    doc.addImage(logo, "JPEG", 10, 10, 20, 20);
+    doc.save(`factura.pdf`);
+  };
+
   const onNotaEntradaChange = (e) => {
     const notaSeleccionada = e.value;
 
@@ -131,7 +173,7 @@ export default function Nota_EntradasDemo() {
 
     return (
       <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-        <h4 className="m-0">Gestionar Producto</h4>
+        <h4 className="m-0">Gestionar Nota de Entrada</h4>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -229,12 +271,14 @@ export default function Nota_EntradasDemo() {
   };
   // ...
 
-  const editProduct = (producto) => {
+    const editProduct = (producto) => {
     setProduct({ ...producto });
-
-    const productosAsociados = producto.productos || [];
-    setProductosAsociados(productosAsociados);
-
+    
+    const productosAsociadoss = producto.productos || [];
+    const empresa=producto.empresa;
+   
+    setProductosAsociados([...productosAsociadoss,empresa]);
+   
     setProductDialog(true); // Show the edit dialog
   };
   const confirmDeleteProduct = (product) => {
@@ -291,13 +335,6 @@ export default function Nota_EntradasDemo() {
       detail: "Products Deleted",
       life: 3000,
     });
-  };
-
-  const onInputChange = (e, name) => {
-    const val = name === "activo" ? e.target.checked : e.target.value;
-    let _product = { ...product };
-    _product[`${name}`] = val;
-    setProduct(_product);
   };
 
   const onInputNumberChange = async (e, name) => {
@@ -362,6 +399,7 @@ export default function Nota_EntradasDemo() {
     <React.Fragment>
       <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
       <Button label="Save" icon="pi pi-check" onClick={saveProduct} />
+      <Button label="Imprimir" onClick={imprimir} />
     </React.Fragment>
   );
 
@@ -464,7 +502,7 @@ export default function Nota_EntradasDemo() {
       </div>
       <Dialog
         visible={productDialog}
-        style={{ width: "40rem" }}
+        style={{ width: "70rem" }}
         breakpoints={{ "960px": "75vw", "641px": "90vw" }}
         header="Detalle de Nota de Entrada"
         modal

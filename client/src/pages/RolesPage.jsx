@@ -260,13 +260,6 @@ export default function RolesDemo() {
           severity="success"
           onClick={openNew}
         />
-        <Button
-          label="Delete"
-          icon="pi pi-trash"
-          severity="danger"
-          onClick={confirmDeleteSelected}
-          disabled={!selectedProducts || !selectedProducts.length}
-        />
       </div>
     );
   };
@@ -296,13 +289,13 @@ export default function RolesDemo() {
           }}
         />
 
-        <Button
+        {/* <Button
           icon="pi pi-trash"
           rounded
           outlined
           severity="danger"
           onClick={() => confirmDeleteProduct(rowData)}
-        />
+        /> */}
       </React.Fragment>
     );
   };
@@ -381,7 +374,6 @@ export default function RolesDemo() {
           filters={filters}
           header={renderHeader}
         >
-          <Column selectionMode="multiple" exportable={false}></Column>
 
           <Column
             field="nombre"

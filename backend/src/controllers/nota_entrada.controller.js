@@ -1,5 +1,9 @@
 const { json } = require("express");
 const pool = require("../db");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { createAccessToken } = require("../libs/jwt");
+const { TOKEN_SECRET } = require("../config");
 
 const CreateNota_Entrada = async (req, res) => {
   try {
@@ -28,6 +32,20 @@ const CreateNota_Entrada = async (req, res) => {
       );
     }
 
+
+    // bitacora
+    const fechaActual = new Date();
+    const fechaFormateada = fechaActual.toISOString();
+    const { token } = req.cookies;
+    const accion = `Creo la Nota de entrada con ID = ${id_new}`;
+
+    if (token) {
+        console.log("entro");
+        const decodedToken = jwt.verify(token, TOKEN_SECRET);
+        await pool.query("INSERT INTO Bitacora (Fecha_Hora, Id_Usuario,accion) VALUES ($1, $2, $3)", [fechaFormateada, decodedToken.id, accion]);
+    }
+    // bitacora
+
     return res
       .status(201)
       .json({ success: "Nota de Entrada creada exitosamente." });
@@ -43,7 +61,7 @@ const Notas_Entrada = async (req, res) => {
     SELECT
     PERSONA.NOMBRE,
     PROVEEDOR.EMPRESA,
-    NOTA_DE_ENTRADA.MONTO,
+    CAST(NOTA_DE_ENTRADA.MONTO AS numeric) AS monto,
     (
       SELECT
         json_agg(json_build_object(
@@ -51,6 +69,7 @@ const Notas_Entrada = async (req, res) => {
           'nombre', PRODUCTO.NOMBRE,
           'cantidad', DETALLE_ENTRADA.CANTIDAD,
           'precio', DETALLE_ENTRADA.PRECIO,
+          'fecha',DETALLE_ENTRADA.FECHA,
           'monto_producto', DETALLE_ENTRADA.MONTO_PRODUCTO
         ))
       FROM
@@ -70,6 +89,10 @@ const Notas_Entrada = async (req, res) => {
     AND NOTA_DE_ENTRADA.ID_USUARIO = USUARIO.ID_PERSONA
     AND NOTA_DE_ENTRADA.ID_PROVEEDOR = PROVEEDOR.ID;
           `);
+
+    result.rows.forEach((row) => {
+      row.monto = parseFloat(row.monto);
+    });
 
     res.json(result.rows);
   } catch (error) {
