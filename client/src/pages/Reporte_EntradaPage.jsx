@@ -23,6 +23,7 @@ export default function Reporte_EntradaDemo() {
     const[fechaseleccionada, setfechaseleccionada]=useState(null);
     useEffect(() => {
         getNotas_Entrada();
+        console.log(reporte_Entrada)
 
     },[mesSeleccionado,añoseleccionado])
     console.log(mesSeleccionado)
