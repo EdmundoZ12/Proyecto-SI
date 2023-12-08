@@ -25,7 +25,7 @@ const FacturasRoute=require('./routes/factura.routes');
 const app=express()
 
 app.use(cors({
-    origin:"https://wilsongym-b7e6c.firebaseapp.com",
+    origin:"https://wilsongym-b7e6c.web.app",
     credentials:true
 }));
 
